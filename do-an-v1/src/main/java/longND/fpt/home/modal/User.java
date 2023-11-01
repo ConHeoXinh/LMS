@@ -3,9 +3,13 @@ package longND.fpt.home.modal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,10 +21,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @AllArgsConstructor
@@ -69,6 +70,15 @@ public class User {
 
 	@OneToMany(mappedBy = "user")
 	private List<Favorite> favorites;
+
+	@OneToOne(mappedBy = "user")
+	private Voucher vouchers;
+
+	@OneToMany(mappedBy = "employee")
+	private List<Voucher> voucher;
+
+	@OneToMany(mappedBy = "user")
+	private List<CartItem> cartItems;
 
 	public User(@Email @NotNull String email, @NotNull String phoneNumber, String username, String password) {
 		super();
