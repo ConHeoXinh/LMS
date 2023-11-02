@@ -77,7 +77,7 @@ public class User {
 	@OneToMany(mappedBy = "employee")
 	private List<Voucher> voucher;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<CartItem> cartItems;
 
 	public User(@Email @NotNull String email, @NotNull String phoneNumber, String username, String password) {
