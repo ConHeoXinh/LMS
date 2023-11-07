@@ -35,7 +35,7 @@ CREATE TABLE `author` (
 
 LOCK TABLES `author` WRITE;
 /*!40000 ALTER TABLE `author` DISABLE KEYS */;
-INSERT INTO `author` VALUES (6,'author 1'),(7,'author 2'),(8,'author 3');
+INSERT INTO `author` VALUES (1,'author 1'),(2,'author 2'),(3,'author 3'),(4,'author 4'),(5,'author 5'),(6,'author 6'),(7,'author 7'),(8,'author 8');
 /*!40000 ALTER TABLE `author` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -51,7 +51,7 @@ CREATE TABLE `book` (
   `copies` int NOT NULL,
   `copies_available` int NOT NULL,
   `create_at` datetime(6) DEFAULT NULL,
-  `description` longtext,
+  `description` varchar(255) DEFAULT NULL,
   `for_user` bit(1) NOT NULL,
   `image_url` varchar(255) DEFAULT NULL,
   `language` varchar(255) DEFAULT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE `book` (
   PRIMARY KEY (`id`),
   KEY `FKgtvt7p649s4x80y6f4842pnfq` (`publisher_id`),
   CONSTRAINT `FKgtvt7p649s4x80y6f4842pnfq` FOREIGN KEY (`publisher_id`) REFERENCES `publisher` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,7 +71,7 @@ CREATE TABLE `book` (
 
 LOCK TABLES `book` WRITE;
 /*!40000 ALTER TABLE `book` DISABLE KEYS */;
-INSERT INTO `book` VALUES (7,0,5,'2023-11-01 22:06:25.784149','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,30000,'book2',2);
+INSERT INTO `book` VALUES (1,0,5,'2023-11-07 19:23:54.608365','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,30000,'book1',1),(2,0,5,'2023-11-07 19:24:14.416323','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,30000,'book2',2),(3,0,5,'2023-11-07 19:24:39.749586','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,30000,'book3',4);
 /*!40000 ALTER TABLE `book` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +98,7 @@ CREATE TABLE `book_author` (
 
 LOCK TABLES `book_author` WRITE;
 /*!40000 ALTER TABLE `book_author` DISABLE KEYS */;
-INSERT INTO `book_author` VALUES (7,7),(7,8);
+INSERT INTO `book_author` VALUES (1,1),(2,1),(2,3),(3,2),(3,4);
 /*!40000 ALTER TABLE `book_author` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +125,7 @@ CREATE TABLE `book_department` (
 
 LOCK TABLES `book_department` WRITE;
 /*!40000 ALTER TABLE `book_department` DISABLE KEYS */;
-INSERT INTO `book_department` VALUES (7,6),(7,8);
+INSERT INTO `book_department` VALUES (1,1),(1,2),(2,5),(2,4),(3,2),(3,6);
 /*!40000 ALTER TABLE `book_department` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,15 +138,15 @@ DROP TABLE IF EXISTS `cart`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cart` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `discounte` int NOT NULL,
-  `total_discounted_price` int NOT NULL,
+  `discounte` double NOT NULL,
+  `total_discounted_price` double NOT NULL,
   `total_item` int DEFAULT NULL,
   `total_price` double DEFAULT NULL,
   `user_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKl70asp4l4w0jmbm1tqyofho4o` (`user_id`),
   CONSTRAINT `FKl70asp4l4w0jmbm1tqyofho4o` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,7 +155,6 @@ CREATE TABLE `cart` (
 
 LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (13,0,30000,1,30000,4);
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,7 +183,7 @@ CREATE TABLE `cart_item` (
   CONSTRAINT `FKbimhqirch02p3mwqsi6rtcu3w` FOREIGN KEY (`voucher_id`) REFERENCES `voucher` (`id`),
   CONSTRAINT `FKis5hg85qbs5d91etr4mvd4tx6` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`),
   CONSTRAINT `FKjnaj4sjyqjkr4ivemf9gb25w` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +192,6 @@ CREATE TABLE `cart_item` (
 
 LOCK TABLES `cart_item` WRITE;
 /*!40000 ALTER TABLE `cart_item` DISABLE KEYS */;
-INSERT INTO `cart_item` VALUES (22,30000,30000,1,7,13,4,NULL);
 /*!40000 ALTER TABLE `cart_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,7 +215,7 @@ CREATE TABLE `departmment` (
 
 LOCK TABLES `departmment` WRITE;
 /*!40000 ALTER TABLE `departmment` DISABLE KEYS */;
-INSERT INTO `departmment` VALUES (6,'department 1'),(7,'department 2'),(8,'department 3');
+INSERT INTO `departmment` VALUES (1,'department 1'),(2,'department 2'),(3,'department 3'),(4,'department 4'),(5,'department 5'),(6,'department 6'),(7,'department 7'),(8,'department 8');
 /*!40000 ALTER TABLE `departmment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,6 +249,44 @@ LOCK TABLES `favorite` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `order_item`
+--
+
+DROP TABLE IF EXISTS `order_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `order_item` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `discounted_price` double NOT NULL,
+  `price` double NOT NULL,
+  `quantity` int NOT NULL,
+  `book_id` bigint DEFAULT NULL,
+  `employee_id` bigint DEFAULT NULL,
+  `order_id` bigint DEFAULT NULL,
+  `user_id` bigint DEFAULT NULL,
+  `voucher_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKb033an1f8qmpbnfl0a6jb5njs` (`book_id`),
+  KEY `FK87oi78dip7g6hd2qmor1pq6ol` (`employee_id`),
+  KEY `FKt5mosdtftirppcdhv4wk963m` (`user_id`),
+  KEY `FKjjj5amd7mdc395e51aoatiunx` (`voucher_id`),
+  CONSTRAINT `FK87oi78dip7g6hd2qmor1pq6ol` FOREIGN KEY (`employee_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `FKb033an1f8qmpbnfl0a6jb5njs` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`),
+  CONSTRAINT `FKjjj5amd7mdc395e51aoatiunx` FOREIGN KEY (`voucher_id`) REFERENCES `voucher` (`id`),
+  CONSTRAINT `FKt5mosdtftirppcdhv4wk963m` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order_item`
+--
+
+LOCK TABLES `order_item` WRITE;
+/*!40000 ALTER TABLE `order_item` DISABLE KEYS */;
+/*!40000 ALTER TABLE `order_item` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `publisher`
 --
 
@@ -261,7 +297,7 @@ CREATE TABLE `publisher` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -270,7 +306,7 @@ CREATE TABLE `publisher` (
 
 LOCK TABLES `publisher` WRITE;
 /*!40000 ALTER TABLE `publisher` DISABLE KEYS */;
-INSERT INTO `publisher` VALUES (1,'Publisher 1'),(2,'Publisher 2'),(3,'Publisher 3'),(4,'publisher 1'),(5,'publisher 2'),(6,'publisher 3');
+INSERT INTO `publisher` VALUES (1,'publisher 1'),(2,'publisher 2'),(3,'publisher 3'),(4,'publisher 4'),(5,'publisher 5'),(6,'publisher 6'),(7,'publisher 7'),(8,'publisher 8');
 /*!40000 ALTER TABLE `publisher` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -285,7 +321,7 @@ CREATE TABLE `role` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -294,7 +330,7 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES (2,'ROLE_EMPLOYEE'),(3,'ROLE_ADMIN'),(5,'ROLE_USER');
+INSERT INTO `role` VALUES (1,'ROLE_ADMIN'),(2,'ROLE_EMPLOYEE'),(3,'ROLE_USER'),(4,'ROLE_GUEST');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -318,7 +354,7 @@ CREATE TABLE `user` (
   `user_status` bit(1) NOT NULL,
   `username` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -327,7 +363,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'2023-11-01 08:55:22.663526','2023-11-01 08:55:22.663526','employee1@gamil.com','first name',_binary '','last name','$2a$10$pq4tmyqa8FnP7n.V7rniAeTHSxztsdIEt9A4EhP68JX4rcGVDnON.','1234567890',_binary '','employee1'),(4,'2023-11-01 22:00:18.087833','2023-11-01 22:00:18.087833','user123@gamil.com','first name',_binary '','last name','$2a$10$dHglW2ARQO1gEAdUbNOeYOFy4YH/vD8tx.b29G5X.Q90tB/i62.K2','1234567890',_binary '','user123');
+INSERT INTO `user` VALUES (1,'2023-11-07 19:22:44.506902','2023-11-07 19:22:44.506902','user123@gamil.com','first name',_binary '','last name','$2a$10$E1X5qggdbS0aik6uP/MPbu8mk3YN/f4AqQ5Y/EwCdoLstecSRfBXa','1234567890',_binary '','user123'),(2,'2023-11-07 19:23:01.725327','2023-11-07 19:23:01.725327','employee1@gamil.com','first name',_binary '','last name','$2a$10$yUQyIVXnETygXLaU/DPAZuw9GVzqnLAwMx2JWJdwv04k1wOe6nVXW','1234567890',_binary '','employee1');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -354,7 +390,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES (2,1),(5,4);
+INSERT INTO `user_role` VALUES (2,2),(3,1);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -371,6 +407,7 @@ CREATE TABLE `voucher` (
   `description` varchar(255) DEFAULT NULL,
   `due_day` int DEFAULT NULL,
   `percent` int DEFAULT NULL,
+  `start_day` date DEFAULT NULL,
   `status` int DEFAULT NULL,
   `employee_id` bigint DEFAULT NULL,
   `user_id` bigint DEFAULT NULL,
@@ -380,7 +417,7 @@ CREATE TABLE `voucher` (
   KEY `FK4h57plnf4easro9xialxph4yy` (`user_id`),
   CONSTRAINT `FK4h57plnf4easro9xialxph4yy` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `FK5a2jebis31mofheltuonn88ql` FOREIGN KEY (`employee_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -401,4 +438,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-06 10:57:51
+-- Dump completed on 2023-11-07 22:15:56
