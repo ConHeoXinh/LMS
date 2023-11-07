@@ -107,7 +107,7 @@ public class CartItemServiceImpl implements CartItemService {
 			cartItemRepository.deleteById(cartItemId);
 
 			double totalPrice = 0;
-			double totalItem = (double) cartItems.size();
+			int totalItem = cartItems.size();
 			double totalDiscountedPrice = 0;
 
 			for (CartItem cartItem1 : cartItems) {

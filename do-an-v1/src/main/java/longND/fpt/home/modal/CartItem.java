@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -47,12 +45,9 @@ public class CartItem {
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
-//	private Long userId;
-
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "voucher_id", referencedColumnName = "id")
 	private Voucher voucher;
-
 
 	private double price;
 	private double discountedPrice;

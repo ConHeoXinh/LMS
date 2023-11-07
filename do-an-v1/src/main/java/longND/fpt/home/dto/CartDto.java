@@ -20,7 +20,7 @@ public class CartDto {
 	private Long userId;
 	private List<CartItemDto> cartItemDtos;
 	private double totalPrice;
-	private double totalItem;
+	private int totalItem;
 	private double totalDiscountedPrice;
 	private double discounte;
 }

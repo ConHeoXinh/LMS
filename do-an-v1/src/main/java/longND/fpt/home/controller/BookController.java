@@ -51,11 +51,6 @@ public class BookController {
 		return bookService.getDetailBook(id);
 	}
 
-	@GetMapping("/search")
-	public ResponseEntity<?> searchProductHandler(@RequestParam("title") String title) {
-		return bookService.searchBook(title);
-	}
-
 	@PutMapping("/delete-book")
 	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	public ResponseEntity<?> deleteBook(@RequestParam("book-id") Long bookId) {
@@ -67,7 +62,7 @@ public class BookController {
 	public ResponseEntity<?> getFavoritesBook() {
 		return favoriteSevice.getAllBookFavoriteByUserId();
 	}
-	
+
 	@PostMapping("/add-favorite")
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public ResponseEntity<?> addFavoritesBook(@RequestParam("book-id") Long bookId) {

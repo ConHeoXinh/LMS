@@ -1,5 +1,7 @@
 package longND.fpt.home.modal;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -45,6 +47,9 @@ public class Voucher {
 	@Column(name = "percent")
 	private int percent;
 
+	@Column(name="start_day")
+	private LocalDate startDay;
+	
 	@Column(name = "due_day")
 	private int dueDay;
 

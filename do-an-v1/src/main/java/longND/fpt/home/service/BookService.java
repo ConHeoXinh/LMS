@@ -18,8 +18,6 @@ public interface BookService {
 	public ResponseEntity<ObjectResponse> getAllBook();
 
 	public ResponseEntity<ObjectResponse> getDetailBook(Long bookId);
-	
-	public ResponseEntity<ObjectResponse> searchBook(String title);
 
 	public ResponseEntity<ApiResponse> deleteBook(Long bookId);
 }

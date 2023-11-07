@@ -3,9 +3,6 @@ package longND.fpt.home.modal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -79,6 +76,24 @@ public class User {
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<CartItem> cartItems;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<OrderItem> orderItems;
+
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<OrderItem> orderItemsE;
+
+	@OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Order> orders;
+
+	@OneToMany(mappedBy = "employees", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Order> ordersE;
+
+//	@OneToMany(mappedBy = "user")
+//	private List<Order> orders;
+//
+//	@OneToMany(mappedBy = "employee")
+//	private List<Order> ordersE;
 
 	public User(@Email @NotNull String email, @NotNull String phoneNumber, String username, String password) {
 		super();

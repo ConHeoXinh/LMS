@@ -71,7 +71,7 @@ CREATE TABLE `book` (
 
 LOCK TABLES `book` WRITE;
 /*!40000 ALTER TABLE `book` DISABLE KEYS */;
-INSERT INTO `book` VALUES (6,0,5,'2023-11-01 22:06:09.885737','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,30000,'book1',1),(7,0,5,'2023-11-01 22:06:25.784149','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,30000,'book2',2);
+INSERT INTO `book` VALUES (7,0,5,'2023-11-01 22:06:25.784149','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,30000,'book2',2);
 /*!40000 ALTER TABLE `book` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +98,7 @@ CREATE TABLE `book_author` (
 
 LOCK TABLES `book_author` WRITE;
 /*!40000 ALTER TABLE `book_author` DISABLE KEYS */;
-INSERT INTO `book_author` VALUES (6,6),(6,7),(7,7),(7,8);
+INSERT INTO `book_author` VALUES (7,7),(7,8);
 /*!40000 ALTER TABLE `book_author` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +125,7 @@ CREATE TABLE `book_department` (
 
 LOCK TABLES `book_department` WRITE;
 /*!40000 ALTER TABLE `book_department` DISABLE KEYS */;
-INSERT INTO `book_department` VALUES (6,7),(6,8),(7,6),(7,8);
+INSERT INTO `book_department` VALUES (7,6),(7,8);
 /*!40000 ALTER TABLE `book_department` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,7 +380,7 @@ CREATE TABLE `voucher` (
   KEY `FK4h57plnf4easro9xialxph4yy` (`user_id`),
   CONSTRAINT `FK4h57plnf4easro9xialxph4yy` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `FK5a2jebis31mofheltuonn88ql` FOREIGN KEY (`employee_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -401,4 +401,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-02  9:27:58
+-- Dump completed on 2023-11-06 10:57:51

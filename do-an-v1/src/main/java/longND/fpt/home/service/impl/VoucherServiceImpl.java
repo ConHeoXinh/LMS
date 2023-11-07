@@ -1,5 +1,6 @@
 package longND.fpt.home.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +78,7 @@ public class VoucherServiceImpl implements VoucherService {
 				throw new SaveDataException("trùng mã giảm giá");
 			} else {
 				Voucher v = Voucher.builder().code(vp.getName()).description(vp.getDescription())
-						.percent(vp.getPercent()).dueDay(vp.getDueDate()).employee(user).user(user).status(1).build();
+						.percent(vp.getPercent()).startDay(LocalDate.now()).dueDay(vp.getDueDate()).employee(user).user(user).status(1).build();
 				voucherRepository.save(v);
 			}
 		});

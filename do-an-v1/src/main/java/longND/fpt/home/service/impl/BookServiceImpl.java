@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import longND.fpt.home.modal.Author;
 import longND.fpt.home.modal.Book;
 import longND.fpt.home.modal.Department;
 import longND.fpt.home.modal.Publisher;
-import longND.fpt.home.modal.User;
 import longND.fpt.home.repository.AuthorRepository;
 import longND.fpt.home.repository.BookRepository;
 import longND.fpt.home.repository.DepartmentRepository;
@@ -31,7 +29,6 @@ import longND.fpt.home.request.EditBookRequest;
 import longND.fpt.home.response.ApiResponse;
 import longND.fpt.home.response.ObjectResponse;
 import longND.fpt.home.service.BookService;
-import longND.fpt.home.util.SecurityUtils;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -145,7 +142,7 @@ public class BookServiceImpl implements BookService {
 						}
 					});
 					book.setDepartments(departments);
-					;
+
 				}
 				if (!Objects.isNull(editBookRequest.getDepartments())) {
 					Publisher publisher = publisherRepository.getById(editBookRequest.getPublisher());
@@ -185,23 +182,17 @@ public class BookServiceImpl implements BookService {
 			Book book = bookRepository.getBookById(bookId);
 			BookDto bookDto = modelMapper.map(book, BookDto.class);
 
+			List<Book> books = bookRepository.relatedBook(book.getDepartments().get(0).getId());
+
 			return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Book", new HashMap<>() {
 				{
-					put("book", book);
+					put("book", bookDto);
+					put("relatedBook", books);
 				}
 			}));
 		}
 	}
 
-	@Override
-	public ResponseEntity<ObjectResponse> searchBook(String title) {
-		List<Book> books = bookRepository.searchBook(title);
-		return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("List Books search", new HashMap<>() {
-			{
-				put("books", books);
-			}
-		}));
-	}
 
 	@Override
 	public ResponseEntity<ApiResponse> deleteBook(Long bookId) {
