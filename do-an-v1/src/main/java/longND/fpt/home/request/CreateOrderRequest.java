@@ -23,7 +23,7 @@ public class CreateOrderRequest {
 
 	private String email;
 
-	private LocalDateTime checkoutDate;
+	private String checkoutDate;
 
-	private LocalDateTime returnDate;
+	private String returnDate;
 }

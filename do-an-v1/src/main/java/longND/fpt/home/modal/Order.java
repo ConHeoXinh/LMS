@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ import lombok.ToString;
 @ToString
 
 @Entity
-@Table(name = "order")
+@Table(name = "orderbook")
 public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,12 +56,19 @@ public class Order {
 
 	private LocalDateTime createdAt;
 
+//	@ManyToOne
+//	@JoinColumn(name = "employee_id", referencedColumnName = "id")
+//	private Employee employee;
+
 	@ManyToOne
 	@JoinColumn(name = "employee_id", referencedColumnName = "id")
-	private User employees;
+	private User employee;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User users;
+	private User user;
 
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "voucher_id", referencedColumnName = "id")
+//	private Voucher voucher;
 }

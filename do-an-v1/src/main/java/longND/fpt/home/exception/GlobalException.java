@@ -34,7 +34,7 @@ public class GlobalException {
 	@ExceptionHandler(BadRequestAlertException.class)
 	public ResponseEntity<ErrorDetails> handlerBadRequestAlertException(BadRequestAlertException e, WebRequest req) {
 		ErrorDetails error = new ErrorDetails(e.getMessage(), req.getDescription(false), LocalDateTime.now());
-		return new ResponseEntity<ErrorDetails>(error, HttpStatus.SWITCHING_PROTOCOLS);
+		return new ResponseEntity<ErrorDetails>(error, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(UpdateDataException.class)

@@ -83,17 +83,11 @@ public class User {
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderItem> orderItemsE;
 
-	@OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<Order> orders;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Order> order;
 
-	@OneToMany(mappedBy = "employees", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<Order> ordersE;
-
-//	@OneToMany(mappedBy = "user")
-//	private List<Order> orders;
-//
-//	@OneToMany(mappedBy = "employee")
-//	private List<Order> ordersE;
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Order> orderE;
 
 	public User(@Email @NotNull String email, @NotNull String phoneNumber, String username, String password) {
 		super();

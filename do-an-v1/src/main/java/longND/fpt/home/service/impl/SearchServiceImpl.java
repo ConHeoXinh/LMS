@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,10 +91,16 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public ResponseEntity<ObjectResponse> searchFilter(SearchFilterRequest searchFilterRequest, int indexPage) {
-		int size = 16;
+		int size = 2;
 		int page = indexPage - 1;
 
-		List<Book> bookList = bookRepository.listSearchFilter();
+		List<Book> bookList = bookRepository.listSearchFilter(searchFilterRequest.getAuthor(),
+				searchFilterRequest.getDepartment(), searchFilterRequest.getPublisher());
+		int totalBook = bookList.size();
+
+		List<Author> authors = authorRepository.findAll();
+		List<Department> departments = departmentRepository.findAll();
+		List<Publisher> publishers = publisherRepository.findAll();
 
 		List<SearchDto> vDtos = new ArrayList<>();
 		for (Book book : bookList) {
@@ -108,29 +113,26 @@ public class SearchServiceImpl implements SearchService {
 		if (Objects.isNull(bookList)) {
 			throw new NotFoundException("search khong co data");
 		} else {
+			List<DepartmentDto> departmentDtoList = new ArrayList<>();
+			List<AuthorDto> authorDtoList = new ArrayList<>();
+			List<PublisherDto> publisherDtoList = new ArrayList<>();
+
+			for (Department item : departments) {
+				DepartmentDto departmentDto = modelMapper.map(item, DepartmentDto.class);
+				departmentDtoList.add(departmentDto);
+			}
+
+			for (Author item : authors) {
+				AuthorDto authorDto = modelMapper.map(item, AuthorDto.class);
+				authorDtoList.add(authorDto);
+			}
+
+			for (Publisher item : publishers) {
+				PublisherDto publisherDto = modelMapper.map(item, PublisherDto.class);
+				publisherDtoList.add(publisherDto);
+			}
 
 			vDtos.forEach(s -> {
-				List<Department> depart = departmentRepository.findAll();
-				List<DepartmentDto> departmentDtoList = new ArrayList<>();
-				for (Department item : depart) {
-					DepartmentDto departmentDto = modelMapper.map(item, DepartmentDto.class);
-					departmentDtoList.add(departmentDto);
-				}
-
-				List<Author> authors = authorRepository.findAll();
-				List<AuthorDto> authorDtoList = new ArrayList<>();
-				for (Author item : authors) {
-					AuthorDto authorDto = modelMapper.map(item, AuthorDto.class);
-					authorDtoList.add(authorDto);
-				}
-
-				List<Publisher> publisher = publisherRepository.findAll();
-				List<PublisherDto> publisherDtoList = new ArrayList<>();
-				for (Publisher item : publisher) {
-					PublisherDto publisherDto = modelMapper.map(item, PublisherDto.class);
-					publisherDtoList.add(publisherDto);
-				}
-
 				SearchDto dto = SearchDto.builder().bookId(s.getBookId()).title(s.getTitle())
 						.desciption(s.getDesciption()).price(s.getPrice()).imageUrl(s.getImageUrl())
 						.copies(s.getCopies()).copies_available(s.getCopies_available())
@@ -146,12 +148,10 @@ public class SearchServiceImpl implements SearchService {
 
 			if (searchFilterRequest.getStatusSortPrice() == 1) {
 				System.out.println(searchFilterRequest.getStatusSortPrice());
-				sort = resultSearch.stream().sorted(Comparator.comparing(SearchDto::getPrice))
-						.collect(Collectors.toList());
+				sort = resultSearch.stream().sorted(Comparator.comparing(SearchDto::getPrice)).toList();
 			} else if (searchFilterRequest.getStatusSortPrice() == 2) {
 				System.out.println(searchFilterRequest.getStatusSortPrice());
-				sort = resultSearch.stream().sorted(Comparator.comparing(SearchDto::getPrice).reversed())
-						.collect(Collectors.toList());
+				sort = resultSearch.stream().sorted(Comparator.comparing(SearchDto::getPrice).reversed()).toList();
 			} else {
 				sort = resultSearch;
 			}
@@ -161,10 +161,9 @@ public class SearchServiceImpl implements SearchService {
 			if (searchFilterRequest.getMinPrice() == 0 || searchFilterRequest.getMaxPrice() == 0) {
 				price = sort;
 			} else {
-				price = sort.stream()
-						.filter(searchDto -> searchDto.getPrice() >= searchFilterRequest.getMinPrice()
-								&& searchDto.getPrice() <= searchFilterRequest.getMaxPrice())
-						.collect(Collectors.toList());
+				price = sort.stream().filter(searchDto -> searchDto.getPrice() >= searchFilterRequest.getMinPrice()
+						&& searchDto.getPrice() <= searchFilterRequest.getMaxPrice()).toList();
+//						.collect(Collectors.toList());
 			}
 
 			if (price.isEmpty()) {
@@ -173,9 +172,10 @@ public class SearchServiceImpl implements SearchService {
 
 				int totalSearch = price.size();
 
-				int totalPage = (totalSearch % 16 == 0) ? totalSearch / 16 : totalSearch / 16 + 1;
+				int totalPage = (totalSearch % size == 0) ? totalSearch / size : (totalSearch / size + 1);
 
-				List<SearchDto> finalSort = price.stream().skip(page).limit(10).collect(Collectors.toList());
+				List<SearchDto> finalSort = price.stream().skip(page).limit(size).toList();
+//						.collect(Collectors.toList());
 
 				List<ViewSearchDto> viewSearchDtoList = new ArrayList<>();
 
@@ -188,10 +188,15 @@ public class SearchServiceImpl implements SearchService {
 					{
 						put("searchList", viewSearchDtoList);
 						put("sizePage", totalPage);
+						put("sizeBook", totalBook);
+						put("listAuthor", authorDtoList);
+						put("listDepartment", departmentDtoList);
+						put("listPublisher", publisherDtoList);
 					}
 				}));
 			}
 		}
+
 	}
 
 	@Override

@@ -9,11 +9,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SearchFilterRequest {
 
-	private Long authorId;
-	private Long departmentId;
-	private Long publisherId;
+//	private Long authorId;
+//	private Long departmentId;
+//	private Long publisherId;
+//	private double minPrice;
+//	private double maxPrice;
+//	private int statusSortPrice;
+
 	private double minPrice;
+
 	private double maxPrice;
+
+	private String author;
+
+	private String department;
+
+	private String publisher;
+
 	private int statusSortPrice;
 
 }

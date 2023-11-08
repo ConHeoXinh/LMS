@@ -23,8 +23,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 			+ "LEFT JOIN departmment ON bd.department_id = departmment.id\r\n"
 			+ "LEFT JOIN book_author ba ON book.id = ba.book_id\r\n"
 			+ "LEFT JOIN author ON ba.author_id = author.id\r\n"
-			+ "LEFT JOIN publisher ON book.publisher_id = publisher.id\r\n" + "GROUP BY book.id", nativeQuery = true)
-	List<Book> listSearchFilter();
+			+ "LEFT JOIN publisher ON book.publisher_id = publisher.id\r\n" + "WHERE (book.price >0)\r\n"
+			+ "AND (book.copies_available > 0)\r\n" + "AND (:authorName IS NULL OR author.name LIKE %:authorName%)\r\n"
+			+ "AND (:departName IS NULL OR departmment.name LIKE %:departName%)\r\n"
+			+ "AND (:publisherName IS NULL OR publisher.name LIKE %:publisherName%)\r\n"
+			+ "GROUP BY book.id", nativeQuery = true)
+	List<Book> listSearchFilter(@Param("authorName") String authorName, @Param("departName") String departName,
+			@Param("publisherName") String publisherName);
 
 	@Query(value = "SELECT * From book where LOWER(book.title) Like %:query%", nativeQuery = true)
 	List<Book> listSearchBookByTitle(@Param("query") String query);

@@ -16,13 +16,15 @@ public interface OrderService {
 
 	public ResponseEntity<ObjectResponse> getAllOrdersByUsername(String username);
 
-	public ResponseEntity<ObjectResponse> usersOrderHistory(Long userId);
+	public ResponseEntity<ObjectResponse> usersOrderHistory(int indexPage);
 
-	public ResponseEntity<ObjectResponse> confirmedOrder(Long orderId);
+	public ResponseEntity<ApiResponse> confirmedOrder(Long orderId);
 
-	public ResponseEntity<ObjectResponse> cancledOrder(Long orderId);
+	public ResponseEntity<ApiResponse> cancledOrder(Long orderId);
 
 	public ResponseEntity<ObjectResponse> getAllOrders();
+	
+	public ResponseEntity<ObjectResponse> getOrderDetail(Long orderId);
 
 	public ResponseEntity<ApiResponse> deleteOrder(Long orderId);
 }

@@ -32,7 +32,7 @@ import lombok.ToString;
 @ToString
 
 @Entity
-@Table(name = "voucher", uniqueConstraints = { @UniqueConstraint(columnNames = "code") })
+@Table(name = "voucher")
 public class Voucher {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,8 +64,8 @@ public class Voucher {
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
-//	@ManyToOne (cascade = CascadeType.ALL)
-//	@JoinColumn(name = "cart_id", referencedColumnName = "id")
+	@ManyToOne (cascade = CascadeType.ALL)
+	@JoinColumn(name = "cart_id", referencedColumnName = "id")
 	@OneToOne(mappedBy = "voucher")
 	private CartItem cartItem;
 }
