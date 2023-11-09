@@ -3,12 +3,11 @@ Library System
 
 My project contains:
 
-Spring Security with role
-JWT
-JPA
+Spring Security with role, JWT, JPA
 
-First Step setup database
-Secondly Step run project
+Architecture: 3 Layer
+
+First Step setup database, Secondly Step is run the project
 
 # Error
-May be you have error with Lombok, please install Lombok with IDE
+Maybe you have an error with Lombok, please install Lombok with IDE
