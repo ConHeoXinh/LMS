@@ -26,8 +26,9 @@ public class SearchDto {
 	private String imageUrl;
 	private int copies;
 	private int copies_available;
+	private String language;
 	private List<DepartmentDto> departmentDtoList;
 	private List<AuthorDto> authorDtoList;
-	private List<PublisherDto> publisheDtoList;
+	private PublisherDto publisheDto;
 
 }

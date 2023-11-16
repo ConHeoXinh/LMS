@@ -33,6 +33,9 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "active_code")
+	private String codeActive;
+
 	@NotNull
 	@Column(name = "first_name")
 	private String firstName;
@@ -60,6 +63,9 @@ public class User {
 	private boolean gender;
 	private boolean userStatus;
 	private LocalDateTime createAt;
+
+	@Column(name = "avatar_url")
+	private String avatarUrl;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -192,5 +198,22 @@ public class User {
 	public void setRoles(Role roles) {
 		this.roles = roles;
 	}
+
+	public String getCodeActive() {
+		return codeActive;
+	}
+
+	public void setCodeActive(String codeActive) {
+		this.codeActive = codeActive;
+	}
+
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
+	}
+	
 
 }

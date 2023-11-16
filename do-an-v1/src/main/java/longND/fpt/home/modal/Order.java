@@ -56,9 +56,6 @@ public class Order {
 
 	private LocalDateTime createdAt;
 
-//	@ManyToOne
-//	@JoinColumn(name = "employee_id", referencedColumnName = "id")
-//	private Employee employee;
 
 	@ManyToOne
 	@JoinColumn(name = "employee_id", referencedColumnName = "id")
@@ -67,8 +64,9 @@ public class Order {
 	@ManyToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
+	
+	private boolean returnOrder;
+	
+	private int extendOrder;
 
-//	@OneToOne(cascade = CascadeType.ALL)
-//	@JoinColumn(name = "voucher_id", referencedColumnName = "id")
-//	private Voucher voucher;
 }

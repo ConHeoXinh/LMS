@@ -1,14 +1,17 @@
 package longND.fpt.home.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.jsonwebtoken.JwtParserBuilder;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +36,7 @@ import longND.fpt.home.modal.User;
 import longND.fpt.home.repository.RoleRepository;
 import longND.fpt.home.repository.UserRepository;
 import longND.fpt.home.request.ChangePasswordRequest;
+import longND.fpt.home.request.ForgotPasswordRequest;
 import longND.fpt.home.request.LoginRequest;
 import longND.fpt.home.request.RegisterRequest;
 import longND.fpt.home.response.ApiResponse;
@@ -39,10 +44,14 @@ import longND.fpt.home.response.ObjectResponse;
 import longND.fpt.home.security.jwt.JwtTokenProvider;
 import longND.fpt.home.security.jwt.UserDetailsImpl;
 import longND.fpt.home.service.AuthService;
+import longND.fpt.home.util.JavaMail;
 import longND.fpt.home.util.SecurityUtils;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+	@Value("${app-jwt-expiration-milliseconds}")
+	private long jwtExpirationDate;
+
 	@Autowired
 	private UserRepository userRepository;
 
@@ -60,6 +69,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private JavaMail javaMail;
 
 	@Override
 	public ResponseEntity<ObjectResponse> register(RegisterRequest registerRequest, HttpServletRequest servletRequest) {
@@ -120,9 +132,27 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public ResponseEntity<ObjectResponse> forgotPassword(String email, HttpServletRequest servletRequest) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<ApiResponse> forgotPassword(String email, HttpServletRequest servletRequest) {
+		User user = userRepository.getUserByEmail(email);
+
+		if (Objects.isNull(user)) {
+			throw new NotFoundException("email khong ton tai");
+		} else {
+			String resetPassword = UUID.randomUUID().toString();
+			String baseUrl = ServletUriComponentsBuilder.fromRequestUri(servletRequest).replacePath(null).build()
+					.toUriString();
+			String fullName = user.getFirstName() + user.getLastName();
+			String toEmail = user.getEmail();
+			String subject = "Xác nhận tài khoản!";
+			String text = "Chào " + fullName + ",\n"
+					+ "Bạn cần xác nhận đó là bạn. Bấm vào đường dẫn bên dưới để xác nhận tài khoản: \n"
+					+ "http://localhost:8080/api/auth/confirm-forgot-password?otp=" + resetPassword
+					+ "\n" + "\nTrân trọng,\n" + "\nĐội ngũ LMS.";
+			user.setCodeActive(resetPassword);
+			userRepository.save(user);
+			javaMail.sentEmail(toEmail, subject, text);
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Reset-password success check mail", 200));
+		}
 	}
 
 	@Override
@@ -151,8 +181,13 @@ public class AuthServiceImpl implements AuthService {
 							.build();
 					Map data = new HashMap<String, Object>();
 
+					Date currentDate = new Date();
+
+					Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
+
 					data.put("userID", user.getId());
 					data.put("user", userDto);
+					data.put("expireDate", expireDate);
 					data.put("token", "Bearer " + jwt);
 					return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Sign in successfully", data));
 				}
@@ -193,9 +228,20 @@ public class AuthServiceImpl implements AuthService {
 
 		if (auth != null) {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Login success full!", 200));
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Logout success full!", 200));
 		} else {
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(" Login success fail!", 400));
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Logout success fail!", 400));
+		}
+	}
+
+	@Override
+	public ResponseEntity<ApiResponse> confirmResetPassword(String token) {
+		User user = userRepository.getUserByCodeActive(token);
+
+		if (Objects.isNull(user)) {
+			throw new NotFoundException("otp khong ton tai");
+		} else {
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("confirm-reset success", 200));
 		}
 	}
 
@@ -214,6 +260,19 @@ public class AuthServiceImpl implements AuthService {
 			} else {
 				throw new BadRequestAlertException("mat khau current khong khop");
 			}
+		}
+	}
+
+	@Override
+	public ResponseEntity<ApiResponse> resetPassword(ForgotPasswordRequest forgotPasswordRequest) {
+		User user = userRepository.getUserByEmail(forgotPasswordRequest.getEmail());
+
+		if (Objects.isNull(user)) {
+			throw new NotFoundException("email khong ton tai");
+		} else {
+			user.setPassword(passwordEncoder.encode(forgotPasswordRequest.getPassword()));
+			userRepository.save(user);
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("reset-password success", 200));
 		}
 	}
 

@@ -8,12 +8,16 @@ import java.util.Objects;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import longND.fpt.home.dto.AuthorDto;
+import longND.fpt.home.dto.BookDto;
+import longND.fpt.home.dto.CustomPage;
 import longND.fpt.home.dto.DepartmentDto;
 import longND.fpt.home.dto.PublisherDto;
 import longND.fpt.home.dto.SearchDto;
@@ -94,109 +98,63 @@ public class SearchServiceImpl implements SearchService {
 		int size = 2;
 		int page = indexPage - 1;
 
-		List<Book> bookList = bookRepository.listSearchFilter(searchFilterRequest.getAuthor(),
-				searchFilterRequest.getDepartment(), searchFilterRequest.getPublisher());
-		int totalBook = bookList.size();
+		Pageable pageable = PageRequest.of(page, size);
 
-		List<Author> authors = authorRepository.findAll();
-		List<Department> departments = departmentRepository.findAll();
-		List<Publisher> publishers = publisherRepository.findAll();
-
-		List<SearchDto> vDtos = new ArrayList<>();
-		for (Book book : bookList) {
-			SearchDto searchDto = modelMapper.map(book, SearchDto.class);
-			vDtos.add(searchDto);
-		}
+		Page<Book> listBook = bookRepository.listSearchFilter(searchFilterRequest.getAuthor(),
+				searchFilterRequest.getDepartment(), searchFilterRequest.getPublisher(), pageable);
 
 		List<SearchDto> list = new ArrayList<>();
 
-		if (Objects.isNull(bookList)) {
-			throw new NotFoundException("search khong co data");
-		} else {
-			List<DepartmentDto> departmentDtoList = new ArrayList<>();
-			List<AuthorDto> authorDtoList = new ArrayList<>();
-			List<PublisherDto> publisherDtoList = new ArrayList<>();
-
-			for (Department item : departments) {
-				DepartmentDto departmentDto = modelMapper.map(item, DepartmentDto.class);
-				departmentDtoList.add(departmentDto);
-			}
-
-			for (Author item : authors) {
-				AuthorDto authorDto = modelMapper.map(item, AuthorDto.class);
-				authorDtoList.add(authorDto);
-			}
-
-			for (Publisher item : publishers) {
-				PublisherDto publisherDto = modelMapper.map(item, PublisherDto.class);
-				publisherDtoList.add(publisherDto);
-			}
-
-			vDtos.forEach(s -> {
-				SearchDto dto = SearchDto.builder().bookId(s.getBookId()).title(s.getTitle())
-						.desciption(s.getDesciption()).price(s.getPrice()).imageUrl(s.getImageUrl())
-						.copies(s.getCopies()).copies_available(s.getCopies_available())
-						.departmentDtoList(departmentDtoList).authorDtoList(authorDtoList)
-						.publisheDtoList(publisherDtoList).build();
-
-				list.add(dto);
-			});
-
-			List<SearchDto> resultSearch = list;
-
-			List<SearchDto> sort = new ArrayList<>();
-
-			if (searchFilterRequest.getStatusSortPrice() == 1) {
-				System.out.println(searchFilterRequest.getStatusSortPrice());
-				sort = resultSearch.stream().sorted(Comparator.comparing(SearchDto::getPrice)).toList();
-			} else if (searchFilterRequest.getStatusSortPrice() == 2) {
-				System.out.println(searchFilterRequest.getStatusSortPrice());
-				sort = resultSearch.stream().sorted(Comparator.comparing(SearchDto::getPrice).reversed()).toList();
-			} else {
-				sort = resultSearch;
-			}
-
-			List<SearchDto> price = new ArrayList<>();
-
-			if (searchFilterRequest.getMinPrice() == 0 || searchFilterRequest.getMaxPrice() == 0) {
-				price = sort;
-			} else {
-				price = sort.stream().filter(searchDto -> searchDto.getPrice() >= searchFilterRequest.getMinPrice()
-						&& searchDto.getPrice() <= searchFilterRequest.getMaxPrice()).toList();
-//						.collect(Collectors.toList());
-			}
-
-			if (price.isEmpty()) {
-				throw new NotFoundException("khong co data search");
-			} else {
-
-				int totalSearch = price.size();
-
-				int totalPage = (totalSearch % size == 0) ? totalSearch / size : (totalSearch / size + 1);
-
-				List<SearchDto> finalSort = price.stream().skip(page).limit(size).toList();
-//						.collect(Collectors.toList());
-
-				List<ViewSearchDto> viewSearchDtoList = new ArrayList<>();
-
-				finalSort.forEach(v -> {
-					ViewSearchDto dto = ViewSearchDto.builder().bookId(v.getBookId()).title(v.getTitle())
-							.description(v.getDesciption()).price(v.getPrice()).imageUrl(v.getImageUrl()).build();
-					viewSearchDtoList.add(dto);
-				});
-				return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("search success", new HashMap<>() {
-					{
-						put("searchList", viewSearchDtoList);
-						put("sizePage", totalPage);
-						put("sizeBook", totalBook);
-						put("listAuthor", authorDtoList);
-						put("listDepartment", departmentDtoList);
-						put("listPublisher", publisherDtoList);
-					}
-				}));
-			}
+		for (Book book : listBook.getContent()) {
+			SearchDto searchDto = convertToSearchDto(book);
+			list.add(searchDto);
 		}
 
+		List<SearchDto> resultSearch = list;
+
+		List<SearchDto> sort = new ArrayList<>();
+
+		if (searchFilterRequest.getStatusSortPrice() == 1) {
+			System.out.println(searchFilterRequest.getStatusSortPrice());
+			sort = resultSearch.stream().sorted(Comparator.comparing(SearchDto::getPrice)).toList();
+		} else if (searchFilterRequest.getStatusSortPrice() == 2) {
+			System.out.println(searchFilterRequest.getStatusSortPrice());
+			sort = resultSearch.stream().sorted(Comparator.comparing(SearchDto::getPrice).reversed()).toList();
+		} else {
+			sort = resultSearch;
+		}
+
+		List<SearchDto> price = new ArrayList<>();
+
+		if (searchFilterRequest.getMinPrice() == 0 || searchFilterRequest.getMaxPrice() == 0) {
+			price = sort;
+		} else {
+			price = sort.stream().filter(searchDto -> searchDto.getPrice() >= searchFilterRequest.getMinPrice()
+					&& searchDto.getPrice() <= searchFilterRequest.getMaxPrice()).toList();
+//					.collect(Collectors.toList());
+		}
+
+		if (price.isEmpty()) {
+			throw new NotFoundException("khong co data search");
+		} else {
+
+			List<ViewSearchDto> viewSearchDtoList = new ArrayList<>();
+
+			price.forEach(v -> {
+				ViewSearchDto dto = ViewSearchDto.builder().bookId(v.getBookId()).title(v.getTitle())
+						.description(v.getDesciption()).price(v.getPrice()).imageUrl(v.getImageUrl()).build();
+				viewSearchDtoList.add(dto);
+			});
+
+			CustomPage<ViewSearchDto> pageResponse = new CustomPage<>(viewSearchDtoList, indexPage, size,
+					listBook.getTotalElements(), listBook.getTotalPages());
+
+			return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("search success", new HashMap<>() {
+				{
+					put("searchList", pageResponse);
+				}
+			}));
+		}
 	}
 
 	@Override
@@ -216,4 +174,69 @@ public class SearchServiceImpl implements SearchService {
 		}));
 	}
 
+	@Override
+	public ResponseEntity<ObjectResponse> getFilterMenu() {
+		List<Author> authors = authorRepository.findAll();
+		List<Department> departments = departmentRepository.findAll();
+		List<Publisher> publishers = publisherRepository.findAll();
+
+		List<DepartmentDto> departmentDtoList = new ArrayList<>();
+		List<AuthorDto> authorDtoList = new ArrayList<>();
+		List<PublisherDto> publisherDtoList = new ArrayList<>();
+
+		for (Department item : departments) {
+			DepartmentDto departmentDto = modelMapper.map(item, DepartmentDto.class);
+			departmentDtoList.add(departmentDto);
+		}
+
+		for (Author item : authors) {
+			AuthorDto authorDto = modelMapper.map(item, AuthorDto.class);
+			authorDtoList.add(authorDto);
+		}
+
+		for (Publisher item : publishers) {
+			PublisherDto publisherDto = modelMapper.map(item, PublisherDto.class);
+			publisherDtoList.add(publisherDto);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("search menu", new HashMap<>() {
+			{
+				put("listAuthor", authorDtoList);
+				put("listDepartment", departmentDtoList);
+				put("listPublisher", publisherDtoList);
+			}
+		}));
+	}
+
+	private SearchDto convertToSearchDto(Book book) {
+		SearchDto searchDto = new SearchDto();
+
+		List<AuthorDto> authorDtolist = new ArrayList<>();
+		for (Author author : book.getAuthors()) {
+			AuthorDto authorDto = modelMapper.map(author, AuthorDto.class);
+			authorDtolist.add(authorDto);
+		}
+		searchDto.setAuthorDtoList(authorDtolist);
+
+		List<DepartmentDto> departmentDtolist = new ArrayList<>();
+		for (Department department : book.getDepartments()) {
+			DepartmentDto departmentDto = modelMapper.map(department, DepartmentDto.class);
+			departmentDtolist.add(departmentDto);
+		}
+		searchDto.setDepartmentDtoList(departmentDtolist);
+
+		PublisherDto publisherDto = modelMapper.map(book.getPublisher(), PublisherDto.class);
+
+		searchDto.setPublisheDto(publisherDto);
+
+		searchDto.setBookId(book.getId());
+		searchDto.setTitle(book.getTitle());
+		searchDto.setDesciption(book.getDescription());
+		searchDto.setPrice(book.getPrice());
+		searchDto.setImageUrl(book.getImageUrl());
+		searchDto.setCopies(book.getCopies());
+		searchDto.setCopies_available(book.getCopies_available());
+		searchDto.setLanguage(book.getLanguage());
+
+		return searchDto;
+	}
 }

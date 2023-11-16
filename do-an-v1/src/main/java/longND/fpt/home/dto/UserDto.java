@@ -27,4 +27,5 @@ public class UserDto {
 	private boolean userStatus;
 	private LocalDateTime createAt;
 	private String roles;
+	private String imageUrl;
 }

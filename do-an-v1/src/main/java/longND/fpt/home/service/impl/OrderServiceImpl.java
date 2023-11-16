@@ -6,13 +6,14 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,15 +22,17 @@ import longND.fpt.home.dto.AuthorDto;
 import longND.fpt.home.dto.BookDto;
 import longND.fpt.home.dto.CartDto;
 import longND.fpt.home.dto.CartItemDto;
+import longND.fpt.home.dto.CustomPage;
 import longND.fpt.home.dto.DepartmentDto;
 import longND.fpt.home.dto.OrderDto;
 import longND.fpt.home.dto.OrderItemDto;
 import longND.fpt.home.dto.PublisherDto;
+import longND.fpt.home.dto.SearchDto;
 import longND.fpt.home.dto.UserDto;
+import longND.fpt.home.dto.ViewSearchDto;
 import longND.fpt.home.dto.VoucherDto;
 import longND.fpt.home.exception.APIException;
 import longND.fpt.home.exception.AuthException;
-import longND.fpt.home.exception.BadRequestAlertException;
 import longND.fpt.home.exception.NotFoundException;
 import longND.fpt.home.modal.Author;
 import longND.fpt.home.modal.Book;
@@ -38,7 +41,6 @@ import longND.fpt.home.modal.CartItem;
 import longND.fpt.home.modal.Department;
 import longND.fpt.home.modal.Order;
 import longND.fpt.home.modal.OrderItem;
-import longND.fpt.home.modal.Role;
 import longND.fpt.home.modal.User;
 import longND.fpt.home.modal.Voucher;
 import longND.fpt.home.repository.BookRepository;
@@ -138,6 +140,8 @@ public class OrderServiceImpl implements OrderService {
 			createdOrder.setOrderStatus(false);
 			createdOrder.setTotalItem(cart.getTotalItem());
 			createdOrder.setCreatedAt(LocalDateTime.now());
+			createdOrder.setReturnOrder(false);
+			createdOrder.setExtendOrder(0);
 
 			Order savedOrder = orderRepository.save(createdOrder);
 
@@ -186,6 +190,12 @@ public class OrderServiceImpl implements OrderService {
 			for (OrderItem item : orderItems) {
 				item.setEmployee(user);
 				orderItemRepository.save(item);
+				Book book = bookRepository.findById(item.getBook().getId())
+						.orElseThrow(() -> new NotFoundException("Book is not found"));
+				book.setCopies(book.getCopies() + 1);
+				book.setCopies_available(book.getCopies_available() - 1);
+
+				bookRepository.save(book);
 			}
 			order.setOrderStatus(true);
 
@@ -217,21 +227,25 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public ResponseEntity<ObjectResponse> getAllOrders() {
+	public ResponseEntity<ObjectResponse> getAllOrders(int indexPage) {
+		int sizeItemOfPage = 1;
+		int page = indexPage - 1;
 		User user = userRepository.findUserById(SecurityUtils.getPrincipal().getId());
 
 		if (!user.getRoles().getName().equals("ROLE_EMPLOYEE")) {
 			throw new AuthException("access denied");
 		} else {
-			List<Order> orders = orderRepository.findAll();
+
+			Pageable pageable = PageRequest.of(page, sizeItemOfPage);
+
+			Page<Order> orders = orderRepository.findAllOrders(pageable);
 
 			List<OrderDto> orderDtoList = new ArrayList<>();
-			int size = orders.size();
 
-			if (size == 0) {
+			if (orders.getTotalElements() == 0) {
 				throw new NotFoundException("not found orders");
 			} else {
-				for (Order order : orders) {
+				for (Order order : orders.getContent()) {
 					OrderDto orderDto = new OrderDto();
 					orderDto.setOrderId(order.getId());
 
@@ -244,16 +258,18 @@ public class OrderServiceImpl implements OrderService {
 					orderDto.setTotalItem(order.getTotalItem());
 
 					UserDto userDto = convertToUserDto(order.getUser());
-					System.out.println(order.getUser().getUsername());
 					orderDto.setUserDto(userDto);
 
 					orderDtoList.add(orderDto);
 				}
 			}
-			return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Order", new HashMap<>() {
-				{
-					put("orderlist", orderDtoList);
 
+			CustomPage<OrderDto> pageResponse = new CustomPage<>(orderDtoList, indexPage, sizeItemOfPage,
+					orders.getTotalElements(), orders.getTotalPages());
+
+			return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Orders List", new HashMap<>() {
+				{
+					put("searchList", pageResponse);
 				}
 			}));
 		}
@@ -371,39 +387,8 @@ public class OrderServiceImpl implements OrderService {
 			orderItemDto.setOrderItemId(item.getId());
 
 			BookDto bookDto = new BookDto();
+			bookDto = convertToBookDto(item.getBook());
 
-			List<AuthorDto> authorDtolist = new ArrayList<>();
-			for (Author author : item.getBook().getAuthors()) {
-				AuthorDto authorDto = modelMapper.map(author, AuthorDto.class);
-				authorDtolist.add(authorDto);
-			}
-			bookDto.setAuthors(authorDtolist);
-
-			List<DepartmentDto> departmentDtolist = new ArrayList<>();
-			for (Department department : item.getBook().getDepartments()) {
-				DepartmentDto departmentDto = modelMapper.map(department, DepartmentDto.class);
-				departmentDtolist.add(departmentDto);
-			}
-			bookDto.setDepartments(departmentDtolist);
-
-			PublisherDto publisherDto = modelMapper.map(item.getBook().getPublisher(), PublisherDto.class);
-
-			bookDto.setPublisher(publisherDto);
-
-			bookDto.setId(item.getBook().getId());
-			bookDto.setTitle(item.getBook().getTitle());
-			bookDto.setDescription(item.getBook().getDescription());
-			bookDto.setPrice(item.getBook().getPrice());
-			bookDto.setImageUrl(item.getBook().getImageUrl());
-			bookDto.setCreateAt(item.getBook().getCreateAt());
-			bookDto.setCopies(item.getBook().getCopies());
-			bookDto.setCopies_available(item.getBook().getCopies_available());
-			bookDto.setLanguage(item.getBook().getLanguage());
-			bookDto.setForUser(item.getBook().isForUser());
-			bookDto.setPage(item.getBook().getPage());
-			bookDto.setAuthors(authorDtolist);
-			bookDto.setDepartments(departmentDtolist);
-			bookDto.setPublisher(publisherDto);
 
 			orderItemDto.setBookdto(bookDto);
 			orderItemDto.setQuantity(item.getQuantity());
@@ -419,7 +404,7 @@ public class OrderServiceImpl implements OrderService {
 			VoucherDto voucherDto = new VoucherDto();
 
 			if (!Objects.isNull(item.getVoucher())) {
-				
+
 				voucherDto.setIdVoucher(item.getVoucher().getId());
 				voucherDto.setNameVoucher(item.getVoucher().getCode());
 				voucherDto.setDescription(item.getVoucher().getDescription());
@@ -427,7 +412,7 @@ public class OrderServiceImpl implements OrderService {
 				voucherDto.setDueDate(item.getVoucher().getDueDay());
 				voucherDto.setStatus(item.getVoucher().getStatus());
 				voucherDto.setUserId(item.getVoucher().getUser().getId());
-			
+
 				orderItemDto.setVoucherDto(voucherDto);
 			}
 
@@ -451,9 +436,44 @@ public class OrderServiceImpl implements OrderService {
 		userDto.setCreateAt(user.getCreateAt());
 		userDto.setRoles(user.getRoles().getName());
 
-		System.out.println(user.isUserStatus());
-
 		return userDto;
 	}
 
+	private BookDto convertToBookDto(Book book) {
+		BookDto bookDto = new BookDto();
+
+		List<AuthorDto> authorDtolist = new ArrayList<>();
+		for (Author author : book.getAuthors()) {
+			AuthorDto authorDto = modelMapper.map(author, AuthorDto.class);
+			authorDtolist.add(authorDto);
+		}
+		bookDto.setAuthors(authorDtolist);
+
+		List<DepartmentDto> departmentDtolist = new ArrayList<>();
+		for (Department department : book.getDepartments()) {
+			DepartmentDto departmentDto = modelMapper.map(department, DepartmentDto.class);
+			departmentDtolist.add(departmentDto);
+		}
+		bookDto.setDepartments(departmentDtolist);
+
+		PublisherDto publisherDto = modelMapper.map(book.getPublisher(), PublisherDto.class);
+
+		bookDto.setPublisher(publisherDto);
+
+		bookDto.setId(book.getId());
+		bookDto.setTitle(book.getTitle());
+		bookDto.setDescription(book.getDescription());
+		bookDto.setPrice(book.getPrice());
+		bookDto.setImageUrl(book.getImageUrl());
+		bookDto.setCreateAt(book.getCreateAt());
+		bookDto.setCopies(book.getCopies());
+		bookDto.setCopies_available(book.getCopies_available());
+		bookDto.setLanguage(book.getLanguage());
+		bookDto.setForUser(book.isForUser());
+		bookDto.setPage(book.getPage());
+		bookDto.setAuthors(authorDtolist);
+		bookDto.setDepartments(departmentDtolist);
+		bookDto.setPublisher(publisherDto);
+		return bookDto;
+	}
 }

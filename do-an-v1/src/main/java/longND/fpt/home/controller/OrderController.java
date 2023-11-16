@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import longND.fpt.home.request.CreateOrderRequest;
@@ -39,10 +40,10 @@ public class OrderController {
 		return orderService.cancledOrder(orderId);
 	}
 
-	@GetMapping("/")
+	@GetMapping("")
 	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-	public ResponseEntity<?> getAllOrdersHandler() {
-		return orderService.getAllOrders();
+	public ResponseEntity<?> getAllOrdersHandler(@RequestParam("index-page") int indexPage) {
+		return orderService.getAllOrders(indexPage);
 	}
 	
 	@GetMapping("/{orderId}")

@@ -62,7 +62,7 @@ public class FavoriteSeviceImpl implements FavoriteSevice {
 	}
 
 	@Override
-	public ResponseEntity<ObjectResponse> editLikeBookByUer(Long favoriteId, boolean type) {
+	public ResponseEntity<ObjectResponse> editLikeBookByUser(Long favoriteId) {
 		Favorite favorite = favoriteRepository.getById(favoriteId);
 
 		User user = userRepository.findUserById(SecurityUtils.getPrincipal().getId());
@@ -73,7 +73,7 @@ public class FavoriteSeviceImpl implements FavoriteSevice {
 			if (user.getId() != favorite.getUser().getId()) {
 				throw new NotFoundException("User khong phai nguoi da like or dislike");
 			} else {
-				favorite.setFavorite(type);
+				favorite.setFavorite(true);
 				Favorite update = favoriteRepository.save(favorite);
 
 				if (Objects.isNull(update)) {
@@ -83,7 +83,7 @@ public class FavoriteSeviceImpl implements FavoriteSevice {
 							.body(new ObjectResponse("Update Like or dislike success", new HashMap<>() {
 								{
 									put("favoriteId", update.getId());
-									put("type", type);
+									put("type", true);
 									put("statusFavorite", update.isFavorite());
 								}
 							}));
