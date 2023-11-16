@@ -25,8 +25,10 @@ DROP TABLE IF EXISTS `author`;
 CREATE TABLE `author` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -35,7 +37,7 @@ CREATE TABLE `author` (
 
 LOCK TABLES `author` WRITE;
 /*!40000 ALTER TABLE `author` DISABLE KEYS */;
-INSERT INTO `author` VALUES (1,'author 1'),(2,'author 2'),(3,'author 3'),(4,'author 4'),(5,'author 5'),(6,'author 6'),(7,'author 7'),(8,'author 8');
+INSERT INTO `author` VALUES (1,'author 1','asdhjsadsjahdsajh  cxzbcxz zx casbc nzcbnzdcsd cx df g xzcz csd','image/1/1/1/1/1'),(2,'author 2','asdhjsadsjahdsajh  cxzbcxz zx casbc nzcbnzdcsd cx df g xzcz csd','image/1/1/1/1/1'),(3,'author 3','asdhjsadsjahdsajh  cxzbcxz zx casbc nzcbnzdcsd cx df g xzcz csd','image/1/1/1/1/1'),(4,'author 4','asdhjsadsjahdsajh  cxzbcxz zx casbc nzcbnzdcsd cx df g xzcz csd','image/1/1/1/1/1'),(5,'author 5','asdhjsadsjahdsajh  cxzbcxz zx casbc nzcbnzdcsd cx df g xzcz csd','image/1/1/1/1/1'),(6,'author 6','asdhjsadsjahdsajh  cxzbcxz zx casbc nzcbnzdcsd cx df g xzcz csd','image/1/1/1/1/1'),(7,'author 7','asdhjsadsjahdsajh  cxzbcxz zx casbc nzcbnzdcsd cx df g xzcz csd','image/1/1/1/1/1'),(8,'author 8','asdhjsadsjahdsajh  cxzbcxz zx casbc nzcbnzdcsd cx df g xzcz csd','image/1/1/1/1/1'),(9,'author 9','asdhjsadsjahdsajh  cxzbcxz zx casbc nzcbnzdcsd cx df g xzcz csd','image/1/1/1/1/1');
 /*!40000 ALTER TABLE `author` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -51,7 +53,7 @@ CREATE TABLE `book` (
   `copies` int NOT NULL,
   `copies_available` int NOT NULL,
   `create_at` datetime DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` longtext,
   `for_user` bit(1) NOT NULL,
   `image_url` varchar(255) DEFAULT NULL,
   `language` varchar(255) DEFAULT NULL,
@@ -61,7 +63,7 @@ CREATE TABLE `book` (
   `publisher_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKgtvt7p649s4x80y6f4842pnfq` (`publisher_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +72,7 @@ CREATE TABLE `book` (
 
 LOCK TABLES `book` WRITE;
 /*!40000 ALTER TABLE `book` DISABLE KEYS */;
-INSERT INTO `book` VALUES (1,0,5,'2023-11-08 09:15:58','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,5000,'book1',4),(2,0,10,'2023-11-08 09:16:15','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,7000,'book2',2),(3,0,12,'2023-11-08 09:16:51','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',200,9000,'book3',1),(4,0,15,'2023-11-08 09:17:27','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',200,11000,'book4',5);
+INSERT INTO `book` VALUES (1,0,5,'2023-11-08 09:15:58','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,5000,'book1',4),(2,0,10,'2023-11-08 09:16:15','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,7000,'book2',2),(3,0,12,'2023-11-08 09:16:51','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',200,9000,'book3',1),(4,5,6,'2023-11-08 09:17:27','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','image1/1/1/1','vietnamese',300,9000,'co cai cc j',4),(5,0,15,'2023-11-09 20:27:32','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',200,20000,'book5',4),(6,0,6,'2023-11-15 15:50:58','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700036011/book.jpg.jpg','vietnamese',300,9000,'Đồng Tiền Đi Liền Nỗ Lực',7),(7,0,50,'2023-11-15 16:13:12','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700036011/book.jpg.jpg','vietnamese',300,18000,'book6',1),(8,0,50,'2023-11-15 16:34:18','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700040856/imageUrl.jpg','vietnamese',300,18000,'book7',1);
 /*!40000 ALTER TABLE `book` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +97,7 @@ CREATE TABLE `book_author` (
 
 LOCK TABLES `book_author` WRITE;
 /*!40000 ALTER TABLE `book_author` DISABLE KEYS */;
-INSERT INTO `book_author` VALUES (1,2),(1,4),(2,1),(2,3),(3,4),(3,2),(4,3);
+INSERT INTO `book_author` VALUES (1,2),(1,4),(2,1),(2,3),(3,4),(3,2),(4,2),(5,4),(5,5),(6,7),(7,7),(7,1),(4,3),(8,7),(8,1);
 /*!40000 ALTER TABLE `book_author` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,7 +122,7 @@ CREATE TABLE `book_department` (
 
 LOCK TABLES `book_department` WRITE;
 /*!40000 ALTER TABLE `book_department` DISABLE KEYS */;
-INSERT INTO `book_department` VALUES (1,2),(1,3),(2,1),(2,2),(3,1),(4,1);
+INSERT INTO `book_department` VALUES (1,2),(1,3),(2,1),(2,2),(3,1),(4,5),(5,5),(5,6),(6,7),(7,2),(7,3),(4,6),(8,2),(8,3);
 /*!40000 ALTER TABLE `book_department` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -198,7 +200,7 @@ CREATE TABLE `departmment` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,7 +209,7 @@ CREATE TABLE `departmment` (
 
 LOCK TABLES `departmment` WRITE;
 /*!40000 ALTER TABLE `departmment` DISABLE KEYS */;
-INSERT INTO `departmment` VALUES (1,'departmment 1'),(2,'departmment 2'),(3,'departmment 3'),(4,'departmment 4'),(5,'departmment 5'),(6,'departmment 6'),(7,'departmment 7'),(8,'departmment 8');
+INSERT INTO `departmment` VALUES (1,'departmment 1'),(2,'departmment 2'),(3,'departmment 3'),(4,'departmment 4'),(5,'departmment 5'),(6,'departmment 6'),(7,'departmment 7'),(8,'departmment 8'),(9,'departmment 9');
 /*!40000 ALTER TABLE `departmment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,6 +295,8 @@ CREATE TABLE `orderbook` (
   `total_price` double NOT NULL,
   `employee_id` bigint DEFAULT NULL,
   `user_id` bigint DEFAULT NULL,
+  `extend_order` int NOT NULL,
+  `return_order` bit(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKnqu8nmwqy5ajj2qd4h2mi2o79` (`employee_id`),
   KEY `FKdexgf1yy7uty6icfgutpo5mjb` (`user_id`)
@@ -305,7 +309,7 @@ CREATE TABLE `orderbook` (
 
 LOCK TABLES `orderbook` WRITE;
 /*!40000 ALTER TABLE `orderbook` DISABLE KEYS */;
-INSERT INTO `orderbook` VALUES (4,'2023-11-08 00:00:00','2023-11-08 13:04:34',0,_binary '\0','2023-11-15 00:00:00',0,2,14000,1,2),(5,'2023-11-08 00:00:00','2023-11-08 15:04:44',0,_binary '\0','2023-11-15 00:00:00',0,2,14000,NULL,2),(6,'2023-11-08 00:00:00','2023-11-08 15:05:01',0,_binary '\0','2023-11-15 00:00:00',0,2,12000,NULL,3);
+INSERT INTO `orderbook` VALUES (4,'2023-11-08 00:00:00','2023-11-08 13:04:34',0,_binary '\0','2023-11-15 00:00:00',0,2,14000,1,2,0,_binary '\0'),(5,'2023-11-08 00:00:00','2023-11-08 15:04:44',0,_binary '\0','2023-11-15 00:00:00',0,2,14000,NULL,2,0,_binary '\0'),(6,'2023-11-08 00:00:00','2023-11-08 15:05:01',0,_binary '\0','2023-11-15 00:00:00',0,2,12000,NULL,3,0,_binary '\0');
 /*!40000 ALTER TABLE `orderbook` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -320,7 +324,7 @@ CREATE TABLE `publisher` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -329,7 +333,7 @@ CREATE TABLE `publisher` (
 
 LOCK TABLES `publisher` WRITE;
 /*!40000 ALTER TABLE `publisher` DISABLE KEYS */;
-INSERT INTO `publisher` VALUES (1,'publisher 1'),(2,'publisher 2'),(3,'publisher 3'),(4,'publisher 4'),(5,'publisher 5'),(6,'publisher 6'),(7,'publisher 7'),(8,'publisher 8');
+INSERT INTO `publisher` VALUES (1,'publisher 1'),(2,'publisher 2'),(3,'publisher 3'),(4,'publisher 4'),(5,'publisher 5'),(6,'publisher 6'),(7,'publisher 7'),(8,'publisher 8'),(9,'publisher 9');
 /*!40000 ALTER TABLE `publisher` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -376,8 +380,10 @@ CREATE TABLE `user` (
   `phone_number` varchar(255) NOT NULL,
   `user_status` bit(1) NOT NULL,
   `username` varchar(255) DEFAULT NULL,
+  `active_code` varchar(255) DEFAULT NULL,
+  `avatar_url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -386,7 +392,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'2023-11-08 09:13:59','2023-11-08 09:13:59','employee1@gamil.com','first name',_binary '','last name','$2a$10$oU7GhiJZ73df3aN3YqZh0ue54oLhqiR5/RMV85f1Xumdxr0EAfT4q','1234567890',_binary '','employee1'),(2,'2023-11-08 09:14:16','2023-11-08 09:14:16','user123@gamil.com','first name',_binary '','last name','$2a$10$OPXpMC5hmCY5y/CnoqablOI8hCzbfPWHpTrILLGTuZw709L/b3AzC','1234567890',_binary '','user123'),(3,'2023-11-08 09:14:27','2023-11-08 09:14:27','user1234@gamil.com','first name',_binary '','last name','$2a$10$1QSv/0upc3DVCedeCF/4Z.vEigNXGpStKxm6L3V0s8l6h7VdDKqn2','1234567890',_binary '','user1234'),(4,'2023-11-08 09:14:49','2023-11-08 09:14:49','employee2@gamil.com','first name',_binary '','last name','$2a$10$sON0eC6Qot6sjRfKosSQ0.RjyPr.UP3MPN4iHFBRkLlTesslDo7Ra','1234567890',_binary '','employee2');
+INSERT INTO `user` VALUES (1,'2023-11-08 09:13:59','2023-11-08 09:13:59','employee1@gamil.com','first name',_binary '','last name','$2a$10$oU7GhiJZ73df3aN3YqZh0ue54oLhqiR5/RMV85f1Xumdxr0EAfT4q','1234567890',_binary '','employee1',NULL,'https://res.cloudinary.com/dboo9wwlk/image/upload/v1700021153/cld-sample.jpg'),(2,'2023-11-08 09:14:16','2023-11-08 09:14:16','longcv210720@gmail.com','first name',_binary '','last name','$2a$10$1rppldzOStndjzKUQ6vmMuAql9HMqyZ7SpI8j7lbAiuZawomu.K42','1234567890',_binary '','user123','3b31f715-fe7f-4b3e-b9bc-3a51dcfd9c8b','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700028461/1700028461214_sWBmBcSpsX.jpg'),(3,'2023-11-08 09:14:27','2023-11-08 09:14:27','user1234@gamil.com','first name',_binary '','last name','$2a$10$1QSv/0upc3DVCedeCF/4Z.vEigNXGpStKxm6L3V0s8l6h7VdDKqn2','1234567890',_binary '','user1234',NULL,'https://res.cloudinary.com/dboo9wwlk/image/upload/v1700021153/cld-sample.jpg'),(4,'2023-11-08 09:14:49','2023-11-08 09:14:49','employee2@gamil.com','first name',_binary '','last name','$2a$10$sON0eC6Qot6sjRfKosSQ0.RjyPr.UP3MPN4iHFBRkLlTesslDo7Ra','1234567890',_binary '','employee2',NULL,'https://res.cloudinary.com/dboo9wwlk/image/upload/v1700021153/cld-sample.jpg'),(5,'2023-11-08 19:43:12','2023-11-08 19:43:12','employee3@gamil.com','first name',_binary '','last name','$2a$10$0P6k6sCq72w4cyQB6NqFnODoz8LCArsOSKh5E7PV71eGWtW2JBmYy','1234567890',_binary '','employee3',NULL,'https://res.cloudinary.com/dboo9wwlk/image/upload/v1700021153/cld-sample.jpg');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -411,7 +417,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES (2,1),(3,2),(3,3),(2,4);
+INSERT INTO `user_role` VALUES (2,1),(3,2),(3,3),(2,4),(2,5);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -458,4 +464,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-08 16:32:21
+-- Dump completed on 2023-11-16 15:21:13
