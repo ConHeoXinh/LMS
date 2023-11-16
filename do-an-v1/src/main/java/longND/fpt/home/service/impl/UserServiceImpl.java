@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import longND.fpt.home.dto.UserDto;
 import longND.fpt.home.exception.NotFoundException;
@@ -29,6 +30,8 @@ import longND.fpt.home.util.SecurityUtils;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private CloudinaryService cloudinaryService;
 
 	@Override
 	public ResponseEntity<ObjectResponse> findUserById(Long userId) {
@@ -47,7 +50,7 @@ public class UserServiceImpl implements UserService {
 			UserDto dto = UserDto.builder().id(user.getId()).username(user.getUsername()).createAt(user.getCreateAt())
 					.dob(user.getDob()).phoneNumber(user.getPhoneNumber()).firstName(user.getFirstName())
 					.lastName(user.getLastName()).email(user.getEmail()).userStatus(user.isUserStatus())
-					.roles(user.getRoles().getName()).build();
+					.roles(user.getRoles().getName()).imageUrl(user.getAvatarUrl()).build();
 
 			return ResponseEntity.status(HttpStatus.OK).body(new JwtResponse(HttpStatus.OK.name(), dto));
 		}
@@ -78,6 +81,22 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("edit profile thanh cong", 200));
+	}
+
+	@Override
+	public ResponseEntity<ApiResponse> editAvatar(MultipartFile file) {
+		User user = userRepository.findUserById(SecurityUtils.getPrincipal().getId());
+
+		if (Objects.isNull(user)) {
+			throw new NotFoundException("user khong ton tai");
+		} else {
+
+			String nameFile = cloudinaryService.upload(file);
+
+			user.setAvatarUrl(nameFile);
+			userRepository.save(user);
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("edit avatar thanh cong", 200));
+		}
 	}
 
 }

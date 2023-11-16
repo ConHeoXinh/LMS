@@ -3,6 +3,8 @@ package longND.fpt.home.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +21,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	Order getById(Long id);
 
-	@Query(value = "SELECT * FROM orderbook WHERE employee_id IS NULL AND order_status = false", nativeQuery = true)
-	List<Order> findAll();
+	@Query(value = "SELECT * FROM orderbook WHERE employee_id IS NULL AND order_status = false",
+			countQuery = "SELECT COUNT(orderbook.id) FROM orderbook WHERE employee_id IS NULL AND order_status = false",
+			nativeQuery = true)
+	Page<Order> findAllOrders(Pageable pageable);
 }

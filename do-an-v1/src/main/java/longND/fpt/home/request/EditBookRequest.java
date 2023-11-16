@@ -3,6 +3,8 @@ package longND.fpt.home.request;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,9 +25,7 @@ public class EditBookRequest {
 
 	private double price;
 
-	private String imageUrl;
-
-	private LocalDateTime createAt;
+//	private MultipartFile imageUrl;
 
 	private int copies;
 

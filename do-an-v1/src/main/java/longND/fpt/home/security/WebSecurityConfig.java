@@ -70,6 +70,9 @@ public class WebSecurityConfig {
 				.permitAll().requestMatchers("/api/cart_item/**")
 				.permitAll().requestMatchers("/api/cart/**")
 				.permitAll().requestMatchers("/api/search/**")
+				.permitAll().requestMatchers("/api/publisher/**")
+				.permitAll().requestMatchers("/api/author/**")
+				.permitAll().requestMatchers("/api/department/**")
 				.permitAll().requestMatchers("/api/book/get-one",
 						"/api/book/search", "/api/book/favorite", "/api/book/add-favorite", "api/book", "/api/order/")
 				.permitAll().anyRequest().authenticated();
@@ -82,21 +85,6 @@ public class WebSecurityConfig {
 //				.formLogin(Customizer.withDefaults()).httpBasic(Customizer.withDefaults());
 		return http.build();
 
-//		http.csrf().disable().cors().disable();
-//		// We need to make sure our authentication filter is run before the http request
-//		// filter is run.
-//		http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//		http.authorizeHttpRequests()
-//				// Specific exclusions or rules.
-//				.requestMatchers("/api/user/**").permitAll().requestMatchers("/api/auth/**").permitAll()
-//				.requestMatchers("/api/cart_item/**").permitAll().requestMatchers("/api/cart/**").permitAll()
-//				.requestMatchers("/api/book/get-one", "/api/book/search", "/api/book/favorite",
-//						"/api/book/add-favorite")
-//				.permitAll()
-//				// Everything else should be authenticated.
-//				.anyRequest().authenticated();
-//		return http.build();
 
 	}
 

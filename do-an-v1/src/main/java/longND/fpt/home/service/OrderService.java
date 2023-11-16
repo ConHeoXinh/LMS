@@ -22,7 +22,7 @@ public interface OrderService {
 
 	public ResponseEntity<ApiResponse> cancledOrder(Long orderId);
 
-	public ResponseEntity<ObjectResponse> getAllOrders();
+	public ResponseEntity<ObjectResponse> getAllOrders(int indexPage);
 	
 	public ResponseEntity<ObjectResponse> getOrderDetail(Long orderId);
 

@@ -1,17 +1,18 @@
-package longND.fpt.home.dto;
+package longND.fpt.home.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
-@Data
 @Builder
 @NoArgsConstructor
-public class AuthorDto {
-	private Long id;
+@Getter
+@Setter
+
+public class CreateDPRequest {
+
 	private String name;
-	private String imageUrl;
-	private String description;
 }
