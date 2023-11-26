@@ -6,10 +6,15 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import longND.fpt.home.dto.CustomPage;
+import longND.fpt.home.dto.ViewSearchDto;
 import longND.fpt.home.exception.NotFoundException;
 import longND.fpt.home.exception.SaveDataException;
 import longND.fpt.home.exception.UpdateDataException;
@@ -62,10 +67,10 @@ public class FavoriteSeviceImpl implements FavoriteSevice {
 	}
 
 	@Override
-	public ResponseEntity<ObjectResponse> editLikeBookByUser(Long favoriteId) {
-		Favorite favorite = favoriteRepository.getById(favoriteId);
-
+	public ResponseEntity<ObjectResponse> editLikeBookByUser(Long bookId) {
 		User user = userRepository.findUserById(SecurityUtils.getPrincipal().getId());
+
+		Favorite favorite = favoriteRepository.findFavoriteByUserIdAndBookId(user.getId(), bookId);
 
 		if (Objects.isNull(favorite)) {
 			throw new NotFoundException("favarite-ID khong ton tai");
@@ -73,7 +78,7 @@ public class FavoriteSeviceImpl implements FavoriteSevice {
 			if (user.getId() != favorite.getUser().getId()) {
 				throw new NotFoundException("User khong phai nguoi da like or dislike");
 			} else {
-				favorite.setFavorite(true);
+				favorite.setFavorite(!favorite.isFavorite());
 				Favorite update = favoriteRepository.save(favorite);
 
 				if (Objects.isNull(update)) {
@@ -93,12 +98,18 @@ public class FavoriteSeviceImpl implements FavoriteSevice {
 	}
 
 	@Override
-	public ResponseEntity<ObjectResponse> getAllBookFavoriteByUserId() {
+	public ResponseEntity<ObjectResponse> getAllBookFavoriteByUserId(int indexPage) {
+		int size = 2;
+		int page = indexPage - 1;
+
+		Pageable pageable = PageRequest.of(page, size);
+
 		User user = userRepository.findUserById(SecurityUtils.getPrincipal().getId());
 		if (Objects.isNull(user)) {
 			throw new NotFoundException("User khong ton tai");
 		} else {
-			List<Favorite> favorites = favoriteRepository.findFavoriteByUserId(user.getId());
+			Page<Favorite> favorites = favoriteRepository.findFavoriteByUserId(user.getId(), pageable);
+
 			List<Book> books = new ArrayList<>();
 			for (Favorite favorite : favorites) {
 				Book book = new Book();
@@ -106,6 +117,7 @@ public class FavoriteSeviceImpl implements FavoriteSevice {
 				book.setTitle(favorite.getBook().getTitle());
 				book.setDescription(favorite.getBook().getDescription());
 				book.setPrice(favorite.getBook().getPrice());
+				book.setImageUrl(favorite.getBook().getImageUrl());
 				book.setCopies(favorite.getBook().getCopies());
 				book.setCopies_available(favorite.getBook().getCopies_available());
 				book.setLanguage(favorite.getBook().getLanguage());
@@ -115,11 +127,20 @@ public class FavoriteSeviceImpl implements FavoriteSevice {
 				book.setPublisher(favorite.getBook().getPublisher());
 				books.add(book);
 			}
+
+			List<ViewSearchDto> viewSearchDtoList = new ArrayList<>();
+			books.forEach(v -> {
+				ViewSearchDto dto = ViewSearchDto.builder().bookId(v.getId()).title(v.getTitle())
+						.description(v.getDescription()).price(v.getPrice()).imageUrl(v.getImageUrl()).build();
+				viewSearchDtoList.add(dto);
+			});
+
+			CustomPage<ViewSearchDto> pageResponse = new CustomPage<>(viewSearchDtoList, indexPage, size,
+					favorites.getTotalElements(), favorites.getTotalPages());
 			return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("list book like", new HashMap<>() {
 				{
 					put("userId", user.getId());
-					put("litsFavorite", books);
-					put("isFavorite", true);
+					put("litsFavorite", pageResponse);
 				}
 			}));
 		}

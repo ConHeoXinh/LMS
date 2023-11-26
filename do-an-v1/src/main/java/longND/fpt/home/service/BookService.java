@@ -12,15 +12,15 @@ import longND.fpt.home.response.ObjectResponse;
 @Service
 public interface BookService {
 
-	public ResponseEntity<ApiResponse> addBook(BookRequest bookRequest, MultipartFile file);
+	public ResponseEntity<ApiResponse> addBook(BookRequest bookRequest);
 
-	public ResponseEntity<ApiResponse> editBook(EditBookRequest editBookRequest, Long bookId, MultipartFile file);
+	public ResponseEntity<ApiResponse> editBook(EditBookRequest editBookRequest, Long bookId);
 
-	public ResponseEntity<ObjectResponse> getAllBook();
+	public ResponseEntity<ObjectResponse> getAllBook(int indexPage);
 
 	public ResponseEntity<ObjectResponse> getDetailBook(Long bookId);
 
 	public ResponseEntity<ApiResponse> deleteBook(Long bookId);
-	
+
 	public ResponseEntity<ObjectResponse> getBookForHome();
 }

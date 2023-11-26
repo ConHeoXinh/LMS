@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import longND.fpt.home.request.CreateOrderRequest;
+import longND.fpt.home.request.ExtendBookRequest;
 import longND.fpt.home.service.OrderService;
 
 @RestController
@@ -51,4 +52,17 @@ public class OrderController {
 	public ResponseEntity<?> getDetailOrdersHandler(@PathVariable Long orderId) {
 		return orderService.getOrderDetail(orderId);
 	}
+	
+	@GetMapping("/expire")
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
+	public ResponseEntity<?> getAllOrdersExprieHandler(@RequestParam("index-page") int indexPage) {
+		return orderService.getAllOrderExpire(indexPage);
+	}
+	
+	@PostMapping("/extend-book")
+	@PreAuthorize("hasRole('ROLE_USER')")
+	public ResponseEntity<?> extendBook(@RequestBody ExtendBookRequest extendBookRequest) {
+		return orderService.extendOrder(extendBookRequest);
+	}
+
 }

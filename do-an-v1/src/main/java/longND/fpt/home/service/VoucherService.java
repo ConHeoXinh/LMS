@@ -24,4 +24,6 @@ public interface VoucherService {
 	public ResponseEntity<ObjectResponse> updateStatusVoucher(Long id, int status);
 
 	public ResponseEntity<JwtResponse> getAllVoucherByUserID();
+
+	public ResponseEntity<ObjectResponse> addVoucherByUserID(Long userID);
 }

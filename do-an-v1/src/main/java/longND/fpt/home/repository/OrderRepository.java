@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import longND.fpt.home.modal.Order;
+import longND.fpt.home.modal.User;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -25,4 +26,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			countQuery = "SELECT COUNT(orderbook.id) FROM orderbook WHERE employee_id IS NULL AND order_status = false",
 			nativeQuery = true)
 	Page<Order> findAllOrders(Pageable pageable);
+	
+	@Query(value = "SELECT * FROM organica.orderbook ORDER BY return_date DESC",
+			countQuery = "SELECT * FROM organica.orderbook ORDER BY return_date DESC",
+			nativeQuery = true)
+	Page<Order> findAllOrdersExpire(Pageable pageable);
+	
+	List<Order> findAllByUser(User user);
 }

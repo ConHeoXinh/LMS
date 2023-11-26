@@ -1,7 +1,5 @@
 package longND.fpt.home.service;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,11 +13,11 @@ public interface BookImageService {
 
 	public ResponseEntity<ObjectResponse> getAllBookImageByBookID(Long bookID);
 
-	public ResponseEntity<ApiResponse> insertBookImage(MultipartFile multipartFile, Long bookID);
+	public ResponseEntity<ObjectResponse> insertBookImage(MultipartFile multipartFile);
 
 	public ResponseEntity<ApiResponse> insertBookImageOneByBookID(MultipartFile multipartFile, Long bookID);
 
-	public ResponseEntity<ApiResponse> editBookImageByBookImageID(Long bookID, MultipartFile multipartFile);
+	public ResponseEntity<ObjectResponse> editBookImageByBookImageID(Long bookID, MultipartFile multipartFile);
 
 	public ResponseEntity<JwtResponse> downloadImage(Long bookID);
 }

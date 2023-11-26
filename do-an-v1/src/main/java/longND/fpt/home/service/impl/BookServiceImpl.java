@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,9 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import longND.fpt.home.dto.AuthorDto;
 import longND.fpt.home.dto.BookDto;
+import longND.fpt.home.dto.CustomPage;
 import longND.fpt.home.dto.DepartmentDto;
 import longND.fpt.home.dto.PublisherDto;
 import longND.fpt.home.dto.SearchDto;
+import longND.fpt.home.dto.ViewSearchDto;
 import longND.fpt.home.exception.APIException;
 import longND.fpt.home.exception.NotFoundException;
 import longND.fpt.home.modal.Author;
@@ -56,7 +61,7 @@ public class BookServiceImpl implements BookService {
 	private CloudinaryService cloudinaryService;
 
 	@Override
-	public ResponseEntity<ApiResponse> addBook(BookRequest bookRequest, MultipartFile file) {
+	public ResponseEntity<ApiResponse> addBook(BookRequest bookRequest) {
 
 		System.err.println(bookRequest.getTitle() + " " + bookRequest.getPublisher());
 		if (bookRepository.existsByTitle(bookRequest.getTitle())) {
@@ -67,12 +72,7 @@ public class BookServiceImpl implements BookService {
 			book.setDescription(bookRequest.getDescription());
 			book.setPrice(bookRequest.getPrice());
 
-			if (file.isEmpty()) {
-				throw new NotFoundException("File trong");
-			} else {
-				String fileName = cloudinaryService.upload(file);
-				book.setImageUrl(fileName);
-			}
+			book.setImageUrl(bookRequest.getImageUrl());
 
 			book.setCreateAt(LocalDateTime.now());
 			book.setCopies(0);
@@ -118,7 +118,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public ResponseEntity<ApiResponse> editBook(EditBookRequest editBookRequest, Long bookId, MultipartFile file) {
+	public ResponseEntity<ApiResponse> editBook(EditBookRequest editBookRequest, Long bookId) {
 		if (Objects.isNull(bookId)) {
 			throw new NotFoundException("Book_id null");
 		} else {
@@ -131,10 +131,9 @@ public class BookServiceImpl implements BookService {
 				book.setTitle(editBookRequest.getTitle());
 				book.setDescription(editBookRequest.getDescription());
 				book.setPrice(editBookRequest.getPrice());
-				if (!file.isEmpty()) {
-					String fileName = cloudinaryService.upload(file);
-					book.setImageUrl(fileName);
-				}
+
+				book.setImageUrl(editBookRequest.getImageUrl());
+
 				book.setCopies(editBookRequest.getCopies());
 				book.setCopies_available(editBookRequest.getCopies_available());
 				book.setLanguage(editBookRequest.getLanguage());
@@ -177,20 +176,26 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public ResponseEntity<ObjectResponse> getAllBook() {
+	public ResponseEntity<ObjectResponse> getAllBook(int indexPage) {
+		int size = 2;
+		int page = indexPage - 1;
+
+		Pageable pageable = PageRequest.of(page, size);
+
+		Page<Book> list = bookRepository.getAllBook(pageable);
 
 		List<BookDto> bookDtos = new ArrayList<>();
-
-		List<Book> books = bookRepository.findAll();
-
-		for (Book book : books) {
-			BookDto bookDto = modelMapper.map(book, BookDto.class);
+		for (Book item : list.getContent()) {
+			BookDto bookDto = convertToBookDto(item);
 			bookDtos.add(bookDto);
 		}
 
+		CustomPage<BookDto> pageResponse = new CustomPage<>(bookDtos, indexPage, size, list.getTotalElements(),
+				list.getTotalPages());
+
 		return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("List Books", new HashMap<>() {
 			{
-				put("books", bookDtos);
+				put("books", pageResponse);
 			}
 		}));
 	}

@@ -81,6 +81,8 @@ public class CartServiceImpl implements CartService {
 
 		for (CartItem cartItem : cartItems) {
 			CartItemDto cartItemDto = modelMapper.map(cartItem, CartItemDto.class);
+			cartItemDto.setTitle(cartItem.getBook().getTitle());
+			cartItemDto.setImageUrl(cartItem.getBook().getImageUrl());
 			cartItemDtos.add(cartItemDto);
 		}
 

@@ -1,6 +1,7 @@
 package longND.fpt.home.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,22 +33,18 @@ public class BookImageServiceImpl implements BookImageService {
 	}
 
 	@Override
-	public ResponseEntity<ApiResponse> insertBookImage(MultipartFile multipartFile, Long bookID) {
+	public ResponseEntity<ObjectResponse> insertBookImage(MultipartFile multipartFile) {
 
-		if (!bookRepository.existsById(bookID)) {
-			throw new NotFoundException("Book_id khong ton tai");
+		if (multipartFile.isEmpty()) {
+			throw new NotFoundException("File trong");
 		} else {
-			if (multipartFile.isEmpty()) {
-				throw new NotFoundException("File trong");
-			} else {
-				Book book = bookRepository.getBookById(bookID);
-				String fileName = cloudinaryService.upload(multipartFile);
-				book.setImageUrl(fileName);
-
-				bookRepository.save(book);
-
-			}
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Tao book thanh cong", 200));
+			String fileName = cloudinaryService.upload(multipartFile);
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ObjectResponse("Upload anh thanh cong", new HashMap<>() {
+						{
+							put("imageLink", fileName);
+						}
+					}));
 		}
 	}
 
@@ -58,16 +55,19 @@ public class BookImageServiceImpl implements BookImageService {
 	}
 
 	@Override
-	public ResponseEntity<ApiResponse> editBookImageByBookImageID(Long bookID, MultipartFile multipartFile) {
+	public ResponseEntity<ObjectResponse> editBookImageByBookImageID(Long bookID, MultipartFile multipartFile) {
 		if (!bookRepository.existsById(bookID)) {
 			throw new NotFoundException("book-id khong ton tai");
 		} else {
 			Book book = bookRepository.getBookById(bookID);
 
 			String fileName = cloudinaryService.upload(multipartFile);
-			book.setImageUrl(fileName);
-			bookRepository.save(book);
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Edit image thanh cong", 200));
+
+			return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Edit anh thanh cong", new HashMap<>() {
+				{
+					put("imageLink", fileName);
+				}
+			}));
 		}
 	}
 

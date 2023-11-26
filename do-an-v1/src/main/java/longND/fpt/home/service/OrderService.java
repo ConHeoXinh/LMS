@@ -3,8 +3,8 @@ package longND.fpt.home.service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import longND.fpt.home.modal.User;
 import longND.fpt.home.request.CreateOrderRequest;
+import longND.fpt.home.request.ExtendBookRequest;
 import longND.fpt.home.response.ApiResponse;
 import longND.fpt.home.response.ObjectResponse;
 
@@ -17,6 +17,8 @@ public interface OrderService {
 	public ResponseEntity<ObjectResponse> getAllOrdersByUsername(String username);
 
 	public ResponseEntity<ObjectResponse> usersOrderHistory(int indexPage);
+	
+	public ResponseEntity<ObjectResponse> getAllOrderExpire(int indexPage);
 
 	public ResponseEntity<ApiResponse> confirmedOrder(Long orderId);
 
@@ -27,4 +29,6 @@ public interface OrderService {
 	public ResponseEntity<ObjectResponse> getOrderDetail(Long orderId);
 
 	public ResponseEntity<ApiResponse> deleteOrder(Long orderId);
+	
+	public ResponseEntity<ApiResponse> extendOrder(ExtendBookRequest extendBookRequest);
 }
