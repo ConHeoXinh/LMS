@@ -25,7 +25,7 @@ public class EditBookRequest {
 
 	private double price;
 
-//	private MultipartFile imageUrl;
+	private String imageUrl;
 
 	private int copies;
 

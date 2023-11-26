@@ -51,6 +51,7 @@ import longND.fpt.home.repository.RoleRepository;
 import longND.fpt.home.repository.UserRepository;
 import longND.fpt.home.repository.VoucherRepository;
 import longND.fpt.home.request.CreateOrderRequest;
+import longND.fpt.home.request.ExtendBookRequest;
 import longND.fpt.home.response.ApiResponse;
 import longND.fpt.home.response.ObjectResponse;
 import longND.fpt.home.service.CartService;
@@ -170,6 +171,12 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public ResponseEntity<ObjectResponse> usersOrderHistory(int indexPage) {
+
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<ObjectResponse> getAllOrderExpire(int indexPage) {
 
 		return null;
 	}
@@ -389,7 +396,6 @@ public class OrderServiceImpl implements OrderService {
 			BookDto bookDto = new BookDto();
 			bookDto = convertToBookDto(item.getBook());
 
-
 			orderItemDto.setBookdto(bookDto);
 			orderItemDto.setQuantity(item.getQuantity());
 			orderItemDto.setPrice(item.getPrice());
@@ -475,5 +481,23 @@ public class OrderServiceImpl implements OrderService {
 		bookDto.setDepartments(departmentDtolist);
 		bookDto.setPublisher(publisherDto);
 		return bookDto;
+	}
+
+	@Override
+	public ResponseEntity<ApiResponse> extendOrder(ExtendBookRequest extendBookRequest) {
+		Order order = orderRepository.findById(extendBookRequest.getOrderId())
+				.orElseThrow(() -> new NotFoundException("Order is not found"));
+		order.setReturnDate(extendBookRequest.getReturnDate());
+		int currentExtend = order.getExtendOrder();
+		if (currentExtend >= 2) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("sách đã hết lượt gia hạn", 500));
+		}
+
+		order.setExtendOrder(currentExtend + 1);
+
+		orderRepository.save(order);
+
+		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("gia hạn sách thành công", 200));
+
 	}
 }

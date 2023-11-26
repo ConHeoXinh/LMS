@@ -101,7 +101,7 @@ public class SearchServiceImpl implements SearchService {
 		Pageable pageable = PageRequest.of(page, size);
 
 		Page<Book> listBook = bookRepository.listSearchFilter(searchFilterRequest.getAuthor(),
-				searchFilterRequest.getDepartment(), searchFilterRequest.getPublisher(), pageable);
+				searchFilterRequest.getDepartment(), searchFilterRequest.getPublisher(), searchFilterRequest.getTitle(), pageable);
 
 		List<SearchDto> list = new ArrayList<>();
 
@@ -159,7 +159,7 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public ResponseEntity<ObjectResponse> getTextSearch(SearchRequest searchRequest) {
-		List<Book> bookList = bookRepository.searchBookByTitle(searchRequest.getSearchText(), PageRequest.of(0, 5));
+		List<Book> bookList = bookRepository.listSearchBookByTitle(searchRequest.getSearchText());
 
 		List<ViewSearchDto> vDtos = new ArrayList<>();
 		for (Book book : bookList) {

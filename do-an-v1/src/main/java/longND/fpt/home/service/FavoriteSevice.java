@@ -9,7 +9,7 @@ import longND.fpt.home.response.ObjectResponse;
 public interface FavoriteSevice {
 	public ResponseEntity<ObjectResponse> createLikeBookByUser(Long bookId);
 
-	public ResponseEntity<ObjectResponse> editLikeBookByUser(Long favoriteId);
+	public ResponseEntity<ObjectResponse> editLikeBookByUser(Long bookId);
 
-	public ResponseEntity<ObjectResponse> getAllBookFavoriteByUserId();
+	public ResponseEntity<ObjectResponse> getAllBookFavoriteByUserId(int indexPage);
 }

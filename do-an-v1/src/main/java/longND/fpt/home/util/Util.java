@@ -1,6 +1,6 @@
 package longND.fpt.home.util;
 
-import longND.fpt.home.request.BookRequest;
+import java.security.SecureRandom;
 
 public class Util {
 	public static String genCode(int size) {
@@ -22,10 +22,20 @@ public class Util {
 
 		return sb.toString();
 	}
-	
-	public static BookRequest convertStringToBookRequest(String item) {
-		
 
-		return null;
+	private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+	public static String generateRandomString(int length) {
+		StringBuilder randomString = new StringBuilder();
+		SecureRandom secureRandom = new SecureRandom();
+
+		for (int i = 0; i < length; i++) {
+			int randomIndex = secureRandom.nextInt(CHARACTERS.length());
+			char randomChar = CHARACTERS.charAt(randomIndex);
+			randomString.append(randomChar);
+		}
+
+		return randomString.toString();
 	}
+
 }

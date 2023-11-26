@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,4 +49,11 @@ public class VoucherController {
 	public ResponseEntity<?> getAllVoucherByUserID() {
 		return voucherService.getAllVoucherByUserID();
 	}
+
+	@GetMapping("/add-vocher-user/{userId}")
+	@PreAuthorize("hasRole('ROLE_USER')")
+	public ResponseEntity<?> addVoucherByUserID(@PathVariable Long userId) {
+		return voucherService.addVoucherByUserID(userId);
+	}
+
 }

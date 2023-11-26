@@ -10,12 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import longND.fpt.home.dto.VoucherDto;
 import longND.fpt.home.exception.NotFoundException;
 import longND.fpt.home.exception.SaveDataException;
+import longND.fpt.home.modal.Order;
 import longND.fpt.home.modal.User;
 import longND.fpt.home.modal.Voucher;
+import longND.fpt.home.repository.OrderRepository;
 import longND.fpt.home.repository.UserRepository;
 import longND.fpt.home.repository.VoucherRepository;
 import longND.fpt.home.request.VoucherRequest;
@@ -24,6 +27,7 @@ import longND.fpt.home.response.JwtResponse;
 import longND.fpt.home.response.ObjectResponse;
 import longND.fpt.home.service.VoucherService;
 import longND.fpt.home.util.SecurityUtils;
+import longND.fpt.home.util.Util;
 
 @Service
 public class VoucherServiceImpl implements VoucherService {
@@ -33,6 +37,9 @@ public class VoucherServiceImpl implements VoucherService {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private OrderRepository orderRepository;
 
 	@Override
 	public ResponseEntity<ObjectResponse> getAllVoucher() {
@@ -78,7 +85,8 @@ public class VoucherServiceImpl implements VoucherService {
 				throw new SaveDataException("trùng mã giảm giá");
 			} else {
 				Voucher v = Voucher.builder().code(vp.getName()).description(vp.getDescription())
-						.percent(vp.getPercent()).startDay(LocalDate.now()).dueDay(vp.getDueDate()).employee(user).user(user).status(1).build();
+						.percent(vp.getPercent()).startDay(LocalDate.now()).dueDay(vp.getDueDate()).employee(user)
+						.user(user).status(1).build();
 				voucherRepository.save(v);
 			}
 		});
@@ -91,21 +99,13 @@ public class VoucherServiceImpl implements VoucherService {
 		Voucher voucher = voucherRepository.getVoucherById(id);
 		User user = userRepository.findUserById(userID);
 
-		Voucher v = Voucher.builder()
-				.code(voucherRequest.getName())
-				.description(voucherRequest.getDescription())
-				.dueDay(voucherRequest.getDueDate())
-				.user(user)
-				.status(voucher.getStatus()).build();
+		Voucher v = Voucher.builder().code(voucherRequest.getName()).description(voucherRequest.getDescription())
+				.dueDay(voucherRequest.getDueDate()).user(user).status(voucher.getStatus()).build();
 
 		Voucher vUpdate = voucherRepository.save(v);
 
-		VoucherDto dto = VoucherDto.builder()
-				.nameVoucher(vUpdate.getCode())
-				.description(vUpdate.getDescription())
-				.dueDate(vUpdate.getDueDay())
-				.percent(vUpdate.getPercent())
-				.userId(vUpdate.getUser().getId())
+		VoucherDto dto = VoucherDto.builder().nameVoucher(vUpdate.getCode()).description(vUpdate.getDescription())
+				.dueDate(vUpdate.getDueDay()).percent(vUpdate.getPercent()).userId(vUpdate.getUser().getId())
 				.status(vUpdate.getStatus()).build();
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Update success voucher", new HashMap<>() {
@@ -143,6 +143,61 @@ public class VoucherServiceImpl implements VoucherService {
 			});
 			return ResponseEntity.status(HttpStatus.OK).body(new JwtResponse(HttpStatus.OK.name(), dtoList));
 		}
+	}
+
+	@Override
+	public ResponseEntity<ObjectResponse> addVoucherByUserID(Long userID) {
+		User user = userRepository.findUserById(userID);
+		List<Order> listOrder = orderRepository.findAllByUser(user);
+
+		LocalDate currentDate = LocalDate.now();
+
+		// Ngày cách đây 2 tháng
+		LocalDate twoMonthsAgo = currentDate.minusMonths(2);
+
+		// calculator percent
+		int countOrderItem = 0;
+		for (Order order : listOrder) {
+			if (order.getCreatedAt().toLocalDate().isAfter(twoMonthsAgo)) {
+				countOrderItem += order.getTotalItem();
+			}
+		}
+
+		double percentDouble = 0.5 * countOrderItem;
+		int percent = 0;
+		if (percentDouble > 20) {
+			percent = 20;
+		} else {
+			percent = (int) percentDouble;
+		}
+		// check order exit
+		Voucher voucher = voucherRepository.getVoucherByUser_Id(userID);
+
+		if (ObjectUtils.isEmpty(voucher)) {
+			voucher = new Voucher();
+		}
+
+		// add voucher
+		voucher.setCode(Util.generateRandomString(6));
+		voucher.setDescription("voucher tạo bởi order của user");
+		voucher.setDueDay(10);
+		voucher.setPercent(percent);
+		voucher.setStartDay(LocalDate.now());
+		voucher.setStatus(1);
+		voucher.setUser(user);
+
+		Voucher vUpdate = voucherRepository.save(voucher);
+
+		VoucherDto dto = VoucherDto.builder().nameVoucher(vUpdate.getCode()).description(vUpdate.getDescription())
+				.dueDate(vUpdate.getDueDay()).percent(vUpdate.getPercent()).userId(vUpdate.getUser().getId())
+				.status(vUpdate.getStatus()).build();
+
+		return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Update success voucher", new HashMap<>() {
+			{
+				put("voucher", dto);
+			}
+		}));
+
 	}
 
 }

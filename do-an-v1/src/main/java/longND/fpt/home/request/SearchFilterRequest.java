@@ -28,4 +28,5 @@ public class SearchFilterRequest {
 
 	private int statusSortPrice;
 
+	private String title;
 }

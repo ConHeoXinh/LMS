@@ -63,7 +63,7 @@ CREATE TABLE `book` (
   `publisher_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKgtvt7p649s4x80y6f4842pnfq` (`publisher_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +72,7 @@ CREATE TABLE `book` (
 
 LOCK TABLES `book` WRITE;
 /*!40000 ALTER TABLE `book` DISABLE KEYS */;
-INSERT INTO `book` VALUES (1,0,5,'2023-11-08 09:15:58','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,5000,'book1',4),(2,0,10,'2023-11-08 09:16:15','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,7000,'book2',2),(3,0,12,'2023-11-08 09:16:51','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',200,9000,'book3',1),(4,5,6,'2023-11-08 09:17:27','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','image1/1/1/1','vietnamese',300,9000,'co cai cc j',4),(5,0,15,'2023-11-09 20:27:32','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',200,20000,'book5',4),(6,0,6,'2023-11-15 15:50:58','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700036011/book.jpg.jpg','vietnamese',300,9000,'Đồng Tiền Đi Liền Nỗ Lực',7),(7,0,50,'2023-11-15 16:13:12','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700036011/book.jpg.jpg','vietnamese',300,18000,'book6',1),(8,0,50,'2023-11-15 16:34:18','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700040856/imageUrl.jpg','vietnamese',300,18000,'book7',1);
+INSERT INTO `book` VALUES (1,0,5,'2023-11-08 09:15:58','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,5000,'book1',4),(2,0,10,'2023-11-08 09:16:15','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',100,7000,'book2',2),(3,0,12,'2023-11-08 09:16:51','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',200,9000,'book3',1),(4,5,6,'2023-11-08 09:17:27','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','image1/1/1/1','vietnamese',300,9000,'co cai cc j',4),(5,0,15,'2023-11-09 20:27:32','asdjhcnzxcbbnsdchjszcbsdmahfbdnabvmsdhfbamjsdfvs dsfsdnbf jb,zx chsdcbnzczx, jsad',_binary '','image1/1/1/1','english',200,20000,'book5',4),(6,0,6,'2023-11-15 15:50:58','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700036011/book.jpg.jpg','vietnamese',300,9000,'Đồng Tiền Đi Liền Nỗ Lực',7),(7,0,50,'2023-11-15 16:13:12','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700036011/book.jpg.jpg','vietnamese',300,18000,'book6',1),(8,0,50,'2023-11-15 16:34:18','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700040856/imageUrl.jpg','vietnamese',300,18000,'book7',1),(9,0,50,'2023-11-23 08:35:42','Cứ nhìn thẳng phía trước, nắm chặt tay những người bạn tin tưởng. Trên đầu là Mặt Trời, bạn sẽ băng qua những cạm bẫy bày dưới chân. Ai cũng có một câu chuyện để kể, ai cũng có một cuộc đời nhiều ý nghĩa. Mỗi ngày hãy viết nên những chương mới, thật hứng khởi, thật mê say, cho cuốn sách đời mình. Đó là ngọn lửa để bạn xuyên qua mọi đêm tối.',_binary '','http://res.cloudinary.com/dboo9wwlk/image/upload/v1700036011/book.jpg.jpg','vietnamese',300,18000,'book 10',1);
 /*!40000 ALTER TABLE `book` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +97,7 @@ CREATE TABLE `book_author` (
 
 LOCK TABLES `book_author` WRITE;
 /*!40000 ALTER TABLE `book_author` DISABLE KEYS */;
-INSERT INTO `book_author` VALUES (1,2),(1,4),(2,1),(2,3),(3,4),(3,2),(4,2),(5,4),(5,5),(6,7),(7,7),(7,1),(4,3),(8,7),(8,1);
+INSERT INTO `book_author` VALUES (1,2),(1,4),(2,1),(2,3),(3,4),(3,2),(4,2),(5,4),(5,5),(6,7),(7,7),(7,1),(4,3),(8,7),(8,1),(9,7),(9,1);
 /*!40000 ALTER TABLE `book_author` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +122,7 @@ CREATE TABLE `book_department` (
 
 LOCK TABLES `book_department` WRITE;
 /*!40000 ALTER TABLE `book_department` DISABLE KEYS */;
-INSERT INTO `book_department` VALUES (1,2),(1,3),(2,1),(2,2),(3,1),(4,5),(5,5),(5,6),(6,7),(7,2),(7,3),(4,6),(8,2),(8,3);
+INSERT INTO `book_department` VALUES (1,2),(1,3),(2,1),(2,2),(3,1),(4,5),(5,5),(5,6),(6,7),(7,2),(7,3),(4,6),(8,2),(8,3),(9,2),(9,3);
 /*!40000 ALTER TABLE `book_department` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -228,7 +228,7 @@ CREATE TABLE `favorite` (
   PRIMARY KEY (`id`),
   KEY `FK3c9qhul48t7s6uc34fl7avfp8` (`book_id`),
   KEY `FKh3f2dg11ibnht4fvnmx60jcif` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,6 +237,7 @@ CREATE TABLE `favorite` (
 
 LOCK TABLES `favorite` WRITE;
 /*!40000 ALTER TABLE `favorite` DISABLE KEYS */;
+INSERT INTO `favorite` VALUES (1,_binary '',1,1),(2,_binary '',1,2),(3,_binary '\0',2,2),(4,_binary '',3,2);
 /*!40000 ALTER TABLE `favorite` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -464,4 +465,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-16 15:21:13
+-- Dump completed on 2023-11-23  9:06:46
