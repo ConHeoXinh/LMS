@@ -51,4 +51,5 @@ public class Cart {
 	private double totalDiscountedPrice;
 
 	private double discounte;
+	private boolean isOrdered;
 }

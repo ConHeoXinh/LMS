@@ -66,4 +66,12 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
 	@Query(value = "SELECT * FROM book", countQuery = "SELECT COUNT(id) FROM book", nativeQuery = true)
 	Page<Book> getAllBook(Pageable pageable);
+
+	@Query(value = "SELECT book.*, favorite.is_favorite FROM organica.book \n"
+			+ "LEFT JOIN book_author ba ON book.id = ba.book_id\n"
+			+ "LEFT JOIN book_department bd ON book.id = bd.book_id\n"
+			+ "LEFT JOIN publisher ON book.publisher_id = publisher.id\n"
+			+ "LEFT JOIN favorite ON book.id = favorite.book_id\n"
+			+ "WHERE favorite.user_id = :userId AND book.id= :bookId", nativeQuery = true)
+	Book getBookByUserIdAndBookId(@Param("userId") Long userId, @Param("bookId") Long bookId);
 }

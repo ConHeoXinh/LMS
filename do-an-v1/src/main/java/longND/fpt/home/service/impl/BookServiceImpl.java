@@ -29,10 +29,13 @@ import longND.fpt.home.exception.NotFoundException;
 import longND.fpt.home.modal.Author;
 import longND.fpt.home.modal.Book;
 import longND.fpt.home.modal.Department;
+import longND.fpt.home.modal.Favorite;
 import longND.fpt.home.modal.Publisher;
+import longND.fpt.home.modal.User;
 import longND.fpt.home.repository.AuthorRepository;
 import longND.fpt.home.repository.BookRepository;
 import longND.fpt.home.repository.DepartmentRepository;
+import longND.fpt.home.repository.FavoriteRepository;
 import longND.fpt.home.repository.PublisherRepository;
 import longND.fpt.home.repository.UserRepository;
 import longND.fpt.home.request.BookRequest;
@@ -40,6 +43,7 @@ import longND.fpt.home.request.EditBookRequest;
 import longND.fpt.home.response.ApiResponse;
 import longND.fpt.home.response.ObjectResponse;
 import longND.fpt.home.service.BookService;
+import longND.fpt.home.util.SecurityUtils;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -54,6 +58,8 @@ public class BookServiceImpl implements BookService {
 	private DepartmentRepository departmentRepository;
 	@Autowired
 	private PublisherRepository publisherRepository;
+	@Autowired
+	private FavoriteRepository favoriteRepository;
 	@Autowired
 	private ModelMapper modelMapper;
 
@@ -177,7 +183,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public ResponseEntity<ObjectResponse> getAllBook(int indexPage) {
-		int size = 2;
+		int size = 5;
 		int page = indexPage - 1;
 
 		Pageable pageable = PageRequest.of(page, size);
@@ -186,7 +192,7 @@ public class BookServiceImpl implements BookService {
 
 		List<BookDto> bookDtos = new ArrayList<>();
 		for (Book item : list.getContent()) {
-			BookDto bookDto = convertToBookDto(item);
+			BookDto bookDto = convertToBookDto(item, null);
 			bookDtos.add(bookDto);
 		}
 
@@ -205,18 +211,41 @@ public class BookServiceImpl implements BookService {
 		if (Objects.isNull(bookId)) {
 			throw new NotFoundException("Book_id null");
 		} else {
-			Book book = bookRepository.getBookById(bookId);
-			BookDto bookDto = modelMapper.map(book, BookDto.class);
+			User user = userRepository.findUserById(SecurityUtils.getPrincipal().getId());
+			if (SecurityUtils.getPrincipal().getId() == null) {
+				Book book = bookRepository.getBookById(bookId);
+				BookDto bookDto = modelMapper.map(book, BookDto.class);
 
-			List<Book> books = bookRepository.relatedBook(book.getDepartments().get(0).getId());
-			books.remove(book);
+				List<Book> books = bookRepository.relatedBook(book.getDepartments().get(0).getId());
+				books.remove(book);
 
-			return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Book", new HashMap<>() {
-				{
-					put("book", bookDto);
-					put("relatedBook", books);
+				return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Book", new HashMap<>() {
+					{
+						put("book", bookDto);
+						put("relatedBook", books);
+					}
+				}));
+			} else {
+				Favorite favorite = favoriteRepository.findFavoriteByUserIdAndBookId(user.getId(), bookId);
+				Book book = bookRepository.getBookById(bookId);
+				BookDto bookDto = modelMapper.map(book, BookDto.class);
+
+				if (!Objects.isNull(favorite)) {
+					bookDto.setLiked(favorite.isFavorite());
+				} else {
+					bookDto.setLiked(false);
 				}
-			}));
+
+				List<Book> books = bookRepository.relatedBook(book.getDepartments().get(0).getId());
+				books.remove(book);
+
+				return ResponseEntity.status(HttpStatus.OK).body(new ObjectResponse("Book", new HashMap<>() {
+					{
+						put("book", bookDto);
+						put("relatedBook", books);
+					}
+				}));
+			}
 		}
 	}
 
@@ -240,14 +269,14 @@ public class BookServiceImpl implements BookService {
 		List<Book> bookNew = bookRepository.getTop10BookNew();
 		List<BookDto> bookNewDto = new ArrayList<>();
 		bookNew.stream().forEach((item) -> {
-			BookDto bookDto = convertToBookDto(item);
+			BookDto bookDto = convertToBookDto(item, null);
 			bookNewDto.add(bookDto);
 		});
 
 		List<Book> bookBorrowed = bookRepository.getTop10BookBorrowed();
 		List<BookDto> bookBorrowedDto = new ArrayList<>();
 		bookBorrowed.stream().forEach((item) -> {
-			BookDto bookDto = convertToBookDto(item);
+			BookDto bookDto = convertToBookDto(item, null);
 			bookBorrowedDto.add(bookDto);
 		});
 
@@ -259,7 +288,7 @@ public class BookServiceImpl implements BookService {
 		}));
 	}
 
-	private BookDto convertToBookDto(Book book) {
+	private BookDto convertToBookDto(Book book, Long userId) {
 		BookDto bookDto = new BookDto();
 
 		List<AuthorDto> authorDtolist = new ArrayList<>();
@@ -294,6 +323,7 @@ public class BookServiceImpl implements BookService {
 		bookDto.setAuthors(authorDtolist);
 		bookDto.setDepartments(departmentDtolist);
 		bookDto.setPublisher(publisherDto);
+
 		return bookDto;
 	}
 }

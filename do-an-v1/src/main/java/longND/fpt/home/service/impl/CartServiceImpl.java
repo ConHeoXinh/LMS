@@ -46,6 +46,7 @@ public class CartServiceImpl implements CartService {
 
 		Cart cart = new Cart();
 		cart.setUser(user);
+		cart.setOrdered(false);
 		Cart createdCart = cartRepository.save(cart);
 		return createdCart;
 	}
@@ -53,45 +54,47 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public CartDto findUserCart(Long userId) {
 		Cart cart = cartRepository.findByUserId(userId);
-		int totalPrice = 0;
-		int totalDiscountedPrice = 0;
-		int totalItem = 0;
-		for (CartItem cartsItem : cart.getCartItems()) {
-			totalPrice += cartsItem.getPrice();
-			totalDiscountedPrice += cartsItem.getDiscountedPrice();
-			totalItem += cartsItem.getQuantity();
-		}
-
-		cart.setTotalPrice(totalPrice);
-		cart.setTotalItem(cart.getCartItems().size());
-		cart.setTotalDiscountedPrice(totalDiscountedPrice);
-		cart.setDiscounte(totalPrice - totalDiscountedPrice);
-		cart.setTotalItem(totalItem);
-
-		cartRepository.save(cart);
 
 		CartDto cartDto = new CartDto();
 
-		cartDto.setId(cart.getId());
-		cartDto.setUserId(cart.getUser().getId());
+		if (cart != null) {
+			int totalPrice = 0;
+			int totalDiscountedPrice = 0;
+			int totalItem = 0;
+			for (CartItem cartsItem : cart.getCartItems()) {
+				totalPrice += cartsItem.getPrice();
+				totalDiscountedPrice += cartsItem.getDiscountedPrice();
+				totalItem += cartsItem.getQuantity();
+			}
 
-		List<CartItemDto> cartItemDtos = new ArrayList<>();
+			cart.setTotalPrice(totalPrice);
+			cart.setTotalItem(cart.getCartItems().size());
+			cart.setTotalDiscountedPrice(totalDiscountedPrice);
+			cart.setDiscounte(totalPrice - totalDiscountedPrice);
+			cart.setTotalItem(totalItem);
 
-		List<CartItem> cartItems = cart.getCartItems();
+			cartRepository.save(cart);
 
-		for (CartItem cartItem : cartItems) {
-			CartItemDto cartItemDto = modelMapper.map(cartItem, CartItemDto.class);
-			cartItemDto.setTitle(cartItem.getBook().getTitle());
-			cartItemDto.setImageUrl(cartItem.getBook().getImageUrl());
-			cartItemDtos.add(cartItemDto);
+			cartDto.setId(cart.getId());
+			cartDto.setUserId(cart.getUser().getId());
+
+			List<CartItemDto> cartItemDtos = new ArrayList<>();
+
+			List<CartItem> cartItems = cart.getCartItems();
+
+			for (CartItem cartItem : cartItems) {
+				CartItemDto cartItemDto = modelMapper.map(cartItem, CartItemDto.class);
+				cartItemDto.setTitle(cartItem.getBook().getTitle());
+				cartItemDto.setImageUrl(cartItem.getBook().getImageUrl());
+				cartItemDtos.add(cartItemDto);
+			}
+
+			cartDto.setCartItemDtos(cartItemDtos);
+			cartDto.setTotalPrice(cart.getTotalPrice());
+			cartDto.setTotalItem(cart.getTotalItem());
+			cartDto.setTotalDiscountedPrice(totalDiscountedPrice);
+			cartDto.setDiscounte(cart.getDiscounte());
 		}
-
-		cartDto.setCartItemDtos(cartItemDtos);
-		cartDto.setTotalPrice(cart.getTotalPrice());
-		cartDto.setTotalItem(cart.getTotalItem());
-		cartDto.setTotalDiscountedPrice(totalDiscountedPrice);
-		cartDto.setDiscounte(cart.getDiscounte());
-
 		return cartDto;
 
 	}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import longND.fpt.home.dto.AuthorDto;
-import longND.fpt.home.dto.BookDto;
 import longND.fpt.home.dto.CustomPage;
 import longND.fpt.home.dto.DepartmentDto;
 import longND.fpt.home.dto.PublisherDto;
@@ -95,13 +93,14 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public ResponseEntity<ObjectResponse> searchFilter(SearchFilterRequest searchFilterRequest, int indexPage) {
-		int size = 2;
+		int size = 16;
 		int page = indexPage - 1;
 
 		Pageable pageable = PageRequest.of(page, size);
 
 		Page<Book> listBook = bookRepository.listSearchFilter(searchFilterRequest.getAuthor(),
-				searchFilterRequest.getDepartment(), searchFilterRequest.getPublisher(), searchFilterRequest.getTitle(), pageable);
+				searchFilterRequest.getDepartment(), searchFilterRequest.getPublisher(), searchFilterRequest.getTitle(),
+				pageable);
 
 		List<SearchDto> list = new ArrayList<>();
 
@@ -142,7 +141,8 @@ public class SearchServiceImpl implements SearchService {
 
 			price.forEach(v -> {
 				ViewSearchDto dto = ViewSearchDto.builder().bookId(v.getBookId()).title(v.getTitle())
-						.description(v.getDesciption()).price(v.getPrice()).imageUrl(v.getImageUrl()).build();
+						.description(v.getDesciption()).price(v.getPrice()).imageUrl(v.getImageUrl())
+						.copies(v.getCopies()).copies_available(v.getCopies_available()).build();
 				viewSearchDtoList.add(dto);
 			});
 

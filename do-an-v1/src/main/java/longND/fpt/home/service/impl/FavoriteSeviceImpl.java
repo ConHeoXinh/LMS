@@ -48,20 +48,34 @@ public class FavoriteSeviceImpl implements FavoriteSevice {
 			throw new NotFoundException("book_id khong ton tai");
 		} else {
 
-			Favorite favorites = Favorite.builder().book(book).user(user).isFavorite(true).build();
-
-			Favorite save = favoriteRepository.save(favorites);
-
-			if (Objects.isNull(save)) {
-				throw new SaveDataException("Like not success");
-			} else {
+			Favorite favorite = favoriteRepository.findFavoriteByUserIdAndBookId(user.getId(), bookId);
+			if (!Objects.isNull(favorite)) {
+				favorite.setFavorite(!favorite.isFavorite());
+				Favorite update = favoriteRepository.save(favorite);
 				return ResponseEntity.status(HttpStatus.OK)
-						.body(new ObjectResponse("Like or dislike success", new HashMap<>() {
+						.body(new ObjectResponse("Update Like or dislike success", new HashMap<>() {
 							{
-								put("favoriteId", save.getId());
-								put("statusFavorite", save.isFavorite());
+								put("favoriteId", update.getId());
+								put("type", true);
+								put("statusFavorite", update.isFavorite());
 							}
 						}));
+			} else {
+				Favorite favorites = Favorite.builder().book(book).user(user).isFavorite(true).build();
+
+				Favorite save = favoriteRepository.save(favorites);
+
+				if (Objects.isNull(save)) {
+					throw new SaveDataException("Like not success");
+				} else {
+					return ResponseEntity.status(HttpStatus.OK)
+							.body(new ObjectResponse("Like or dislike success", new HashMap<>() {
+								{
+									put("favoriteId", save.getId());
+									put("statusFavorite", save.isFavorite());
+								}
+							}));
+				}
 			}
 		}
 	}

@@ -12,6 +12,6 @@ import longND.fpt.home.modal.Cart;
 @Transactional
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
-	@Query(value = "SELECT * FROM cart WHERE user_id=:userId", nativeQuery = true)
+	@Query(value = "SELECT * FROM cart WHERE user_id=:userId AND is_ordered is false", nativeQuery = true)
 	public Cart findByUserId(@Param("userId") Long userId);
 }

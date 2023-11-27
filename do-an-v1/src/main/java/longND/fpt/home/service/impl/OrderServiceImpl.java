@@ -34,6 +34,7 @@ import longND.fpt.home.dto.VoucherDto;
 import longND.fpt.home.exception.APIException;
 import longND.fpt.home.exception.AuthException;
 import longND.fpt.home.exception.NotFoundException;
+import longND.fpt.home.exception.SaveDataException;
 import longND.fpt.home.modal.Author;
 import longND.fpt.home.modal.Book;
 import longND.fpt.home.modal.Cart;
@@ -132,6 +133,12 @@ public class OrderServiceImpl implements OrderService {
 			createdOrder.setUser(user);
 			createdOrder.setOrderItems(orderItems);
 
+			if(Objects.isNull(orderRequest.getCheckoutDate())) {
+				throw new SaveDataException("Lam on chon ngay muon sach");
+			}
+			if(Objects.isNull(orderRequest.getReturnDate())) {
+				throw new SaveDataException("Lam on chon ngay tra sach");
+			}
 			createdOrder.setCheckoutDate(convertStringToLocalDateTime(orderRequest.getCheckoutDate()));
 
 			createdOrder.setReturnDate(convertStringToLocalDateTime(orderRequest.getReturnDate()));
@@ -144,6 +151,8 @@ public class OrderServiceImpl implements OrderService {
 			createdOrder.setReturnOrder(false);
 			createdOrder.setExtendOrder(0);
 
+			cart.setOrdered(!cart.isOrdered());
+			cartRepository.save(cart);
 			Order savedOrder = orderRepository.save(createdOrder);
 
 			for (OrderItem item : orderItems) {
@@ -235,7 +244,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public ResponseEntity<ObjectResponse> getAllOrders(int indexPage) {
-		int sizeItemOfPage = 1;
+		int sizeItemOfPage = 4;
 		int page = indexPage - 1;
 		User user = userRepository.findUserById(SecurityUtils.getPrincipal().getId());
 
