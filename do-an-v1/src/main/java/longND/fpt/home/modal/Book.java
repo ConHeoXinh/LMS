@@ -58,9 +58,7 @@ public class Book {
 	private int page;
 
 	@ManyToMany
-	@JoinTable(name = "Book_Author",
-	joinColumns = @JoinColumn(name = "book_id"),
-	inverseJoinColumns = @JoinColumn(name = "author_id"))
+	@JoinTable(name = "Book_Author", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
 	private List<Author> authors;
 
 	@ManyToMany
@@ -185,6 +183,5 @@ public class Book {
 	public void setPublisher(Publisher publisher) {
 		this.publisher = publisher;
 	}
-	
 
 }

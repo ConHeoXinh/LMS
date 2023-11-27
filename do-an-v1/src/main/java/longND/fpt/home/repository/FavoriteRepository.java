@@ -18,6 +18,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 	Favorite getById(Long id);
 
 	@Query(value = "SELECT * FROM organica.favorite \r\n"
-			+ "WHERE is_favorite = 1 AND book_id = :bookId AND user_id= :userId", nativeQuery = true)
+			+ "WHERE book_id = :bookId AND user_id= :userId", nativeQuery = true)
 	Favorite findFavoriteByUserIdAndBookId(@Param("userId") Long userId, @Param("bookId") Long bookId);
 }

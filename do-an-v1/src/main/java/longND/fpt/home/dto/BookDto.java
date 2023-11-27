@@ -42,4 +42,6 @@ public class BookDto {
 	private List<DepartmentDto> departments;
 
 	private PublisherDto publisher;
+	
+	private boolean isLiked;
 }
